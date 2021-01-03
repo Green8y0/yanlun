@@ -1,3 +1,19 @@
-# yanlun
-发现杯项目前端
-1.第一版前端，仅完成了登陆页面的部分CSS代码
+# temp
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
