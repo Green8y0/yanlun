@@ -1,36 +1,43 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+const Login = () => import('@/views/login/Login')
+const Register = () =>import("@/views/register/Register")
 
-// const Home = () => import('../views/home/Home.vue')
-// const Sort = () => import('../views/sort/Sort.vue')
-// const Cart = () => import('../views/cart/Cart.vue')
-// const My = () => import('../views/my/My.vue')
+const My = () => import('@/views/my/My')
+const Schools = () => import('@/views/schools/Schools')
+const Tribune = () => import('@/views/tribune/Tribune')
+
 
 const routes = [
-  // {
-  //   path: '/',
-  //   redirect: '/home'
-  // },
-  // {
-  //   path: '/home',
-  //   name: 'Home',
-  //   component: Home
-  // },
-  // {
-  //   path: '/sort',
-  //   name: 'Sort',
-  //   component: Sort
-  // },
-  // {
-  //   path: '/cart',
-  //   name: 'Cart',
-  //   component: Cart
-  // },
-  // {
-  //   path: '/my',
-  //   name: 'My',
-  //   component: My
-  // },
+  {
+    path:'/',
+    redirect:'/schools'
+  },
+  {
+    path: '/schools',
+    name:'Schools',
+    component:Schools
+  },
+  {
+    path: '/tribune',
+    name:'Tribune',
+    component:Tribune
+  },
+  {
+    path: '/my',
+    name:'My',
+    component:My
+  },
+  {
+    path: '/login',
+    name:'Login',
+    component:Login
+  },
+  {
+    path: '/register',
+    name:'Register',
+    component:Register
+  }
 ]
 
 const router = createRouter({
