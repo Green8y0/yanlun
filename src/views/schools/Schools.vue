@@ -423,7 +423,10 @@
         			collectionNum: 1,			// 我的收藏
         			historyNum: 10,				// 浏览历史
         			attentionNum: 4,			// 我的关注
-        			circleNum: 0				// 我的圈子
+        			circleNum: 0,				// 我的圈子
+                    postNum: 0,                 // 我的帖子
+                    draftNum: 0,                // 草稿箱
+                    myFan: 0                    // 我的粉丝
         		},
         		carouselImgSrc: ['carousel1','carousel2','carousel3','carousel4','carousel5'],
         		currentIndex: 0,

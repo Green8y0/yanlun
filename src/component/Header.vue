@@ -38,7 +38,7 @@
                         <span>我的</span>
                     </router-link>
                 </li>
-                <li class="nav-li">
+                <li v-else class="nav-li">
                     <router-link to="login" class="nav-link">
                         <span>登录</span>
                     </router-link>
@@ -54,7 +54,7 @@
         name: "Header",
         data(){
             return{
-                show:true,
+                show:false,
             }
         }
     }
