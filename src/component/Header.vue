@@ -9,13 +9,19 @@
                     </a>
                 </li>
                 <li class="nav-li">
-                    <router-link to="schools" class="nav-link"><span>院校</span></router-link>
+                    <router-link to="schools" @click="checkCurrentRouter"
+                    :class="currentRouter === 'schools'?'nav-link-active':'nav-link'">
+                        <span>院校</span>
+                    </router-link>
                 </li>
                 <li class="nav-li">
-                    <router-link to="tribune" class="nav-link"><span>论坛</span></router-link>
+                    <router-link to="tribune" @click="checkCurrentRouter"
+                    :class="currentRouter === 'tribune'?'nav-link-active':'nav-link'">
+                        <span>论坛</span>
+                    </router-link>
                 </li>
                 <li class="nav-li" style="width: 110px;">
-                    <router-link to="tribune" class="nav-link" style="width: 110px;">
+                    <router-link to="" class="nav-link" style="width: 110px;">
                         <span>关于我们</span>
                     </router-link>
                 </li>
@@ -34,7 +40,8 @@
             <!-- 右侧登录区域 -->
             <ul class="navbar-nav-right">
                 <li v-if="!show" class="nav-li">
-                    <router-link to="my" class="nav-link">
+                    <router-link to="my" @click="checkCurrentRouter"
+                    :class="currentRouter === 'my'?'nav-link-active':'nav-link'">
                         <span>我的</span>
                     </router-link>
                 </li>
@@ -50,12 +57,25 @@
 </template>
 
 <script>
+    import {getUrlInfo} from '@/util.js'
     export default {
         name: "Header",
         data(){
             return{
                 show:false,
+                currentRouter: null
             }
+        },
+        methods:{
+            checkCurrentRouter(){
+                let urlInfo = getUrlInfo()
+                this.currentRouter = urlInfo.currentRouter
+                console.log('currentRouter=',this.currentRouter)
+            }
+        },
+        mounted(){
+            // 设置当前页面的CSS
+            this.checkCurrentRouter()
         }
     }
 </script>
@@ -77,7 +97,7 @@
         margin-bottom: 10px;
         display: flex;
         flex-direction: row;
-        justify-content: flex-start;/*左对齐*/
+        justify-content: center;/*居中对齐*/
     }
     .navbar-nav-left{
         height: 100%;
@@ -99,6 +119,16 @@
         width: 60px;
         text-align: center;
         padding-bottom: 3px;
+    }
+    .nav-link-active{
+        color: #FFFFFF;
+        font-size: 18px;
+        font-family: MicrosoftYaHei;
+        height: 20px;
+        width: 60px;
+        text-align: center;
+        padding-bottom: 3px;
+        border-bottom: 2px solid #FFDA1F;
     }
     .nav-link:hover{
         border-bottom: 2px solid #FFDA1F;
