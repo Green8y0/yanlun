@@ -1,15 +1,27 @@
 <template>
     <div class="all">
-    	<a href="children1">children1</a>
+    	<router-view></router-view>
     </div>
 </template>
 
 <script>
     export default {
-        name: "Register"
+        name: "Register",
+        data(){
+            return{
+                email:'',
+                password:'',
+                batcheler:'',
+                dreamedmaster:''
+            }
+        }
     }
 </script>
 
 <style scoped>
-
+    .all{
+        min-width: 100%;
+        min-height: 100%;
+        position: absolute;
+    }
 </style>

@@ -12,10 +12,12 @@
 
 <script>
   import Header from "./component/Header"
+  import VDistpicker from 'v-distpicker'
   export default {
     name: 'App',
     components :{
-      appHeader:Header
+      appHeader:Header,
+      vdistpicker:VDistpicker
     }
 
   }

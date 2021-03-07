@@ -10,13 +10,16 @@
                 </li>
                 <li class="nav-li">
                     <router-link to="schools" @click="checkCurrentRouter"
-                    :class="currentRouter === 'schools'?'nav-link-active':'nav-link'">
+                                 :class="currentRouter === 'schools' ||
+                                 currentRouter === 'schoolInfo'?'nav-link-active':'nav-link'">
                         <span>院校</span>
                     </router-link>
                 </li>
                 <li class="nav-li">
                     <router-link to="tribune" @click="checkCurrentRouter"
-                    :class="currentRouter === 'tribune'?'nav-link-active':'nav-link'">
+                                :class="currentRouter === 'tribune' ||
+                                currentRouter === 'circle' ||
+                                currentRouter === 'circledetail'?'nav-link-active':'nav-link'">
                         <span>论坛</span>
                     </router-link>
                 </li>
@@ -41,7 +44,7 @@
             <ul class="navbar-nav-right">
                 <li v-if="!show" class="nav-li">
                     <router-link to="my" @click="checkCurrentRouter"
-                    :class="currentRouter === 'my'?'nav-link-active':'nav-link'">
+                                 :class="currentRouter === 'my'?'nav-link-active':'nav-link'">
                         <span>我的</span>
                     </router-link>
                 </li>
@@ -166,11 +169,11 @@
     }
     :-moz-placeholder{
         /*Firefox 18-*/
-        color: #FFFFFF; 
+        color: #FFFFFF;
     }
     ::-moz-placeholder{
         /*Firefox 19+*/
-        color: #FFFFFF; 
+        color: #FFFFFF;
     }
     :-ms-input-placeholder{
         color: #FFFFFF;

@@ -13,10 +13,10 @@
                         <img src="@/assets/img/common/edit_icon.png">
                     </div>
                     <!-- 关注和私信按钮 -->
-                    <!-- <div class="userinfo-btn">
+                    <div class="userinfo-btn">
                         <button class="btn-focus-on">关注</button>
                         <button class="btn-private-msg">私信</button>
-                    </div> -->
+                    </div>
                 </div>
                 <!-- end of 用户信息 -->
 
@@ -31,7 +31,7 @@
                 <!-- 我的文章区域 -->
                 <div :class="posts.length===0?'null-article-left':'article-left'">
                     <!-- 文章区域标题 -->
-                    <div class="left-tilte" v-if="!editTag">
+                    <div class="left-tilte">
                         <span>我的文章</span>
                         <div class="title-sort">
                             <span>按时间排序</span>
@@ -40,342 +40,8 @@
                     </div>
                     <!-- end of 文章区域标题 -->
 
-                    <!-- 编辑个人信息区域 -->
-                    <div class="edit-content" v-if="editTag">
-                        <!-- 基本信息 -->
-                        <div class="base-info">
-                            <!-- 基本信息标题 -->
-                            <div class="base-title">
-                                <span class="base-title-font">基本信息</span>
-                                <div class="base-divider"></div>
-                                <span class="edit-save" v-if="!baseInfoEdit" @click="changeBaseInfoEdit('edit')">
-	    							编辑
-	    						</span>
-                                <span class="edit-save" v-else @click="changeBaseInfoEdit('save')">保存</span>
-                            </div>
-
-                            <!-- 基本信息内容 -->
-                            <div class="base-info-content">
-                                <!-- 登录名 -->
-                                <div class="info-line" style="margin-top: 24px;">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">登录名</span>
-                                    </div>
-                                    <span class="base-info-td">
-	    								{{userInfo.baseInfo.loginName}}
-	    								<span class="base-info-tip">修改密码</span>
-	    							</span>
-                                </div>
-
-                                <!-- 昵称 -->
-                                <div class="info-line">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">昵&nbsp;&nbsp;称</span>
-                                    </div>
-                                    <!-- 昵称输入框 -->
-                                    <input v-if="baseEditTags.editNickName"
-                                           type="text" name="weixin" class="info-line-text"
-                                           v-model="userInfo.baseInfo.nickName" placeholder="请输入昵称">
-
-                                    <span class="base-info-td" v-else>{{userInfo.baseInfo.nickName}}</span>
-                                </div>
-
-                                <!-- 真实姓名 -->
-                                <div class="info-line">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">真实姓名</span>
-                                    </div>
-
-                                    <!-- 真实姓名输入框 -->
-                                    <input v-if="baseEditTags.editRealName"
-                                           type="text" name="weixin" class="info-line-text"
-                                           v-model="userInfo.baseInfo.realName" placeholder="请输入真实姓名">
-
-                                    <!-- 可见度 -->
-                                    <select v-if="baseEditTags.editRealName"
-                                            name="realNameVisibility" class="info-line-select">
-                                        <option name="allVisible">所有人可见</option>
-                                        <option name="onlyFocusVisible">我关注的人可见</option>
-                                        <option name="onlyMyselfVisible">仅自己可见</option>
-                                    </select>
-
-                                    <span class="base-info-td" v-else>{{userInfo.baseInfo.realName}}</span>
-                                </div>
-
-                                <!-- 所在地 -->
-                                <div class="info-line">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">所在地</span>
-                                    </div>
-
-                                    <!-- 所在地输入框 -->
-                                    <!-- <v-distpicker v-if="baseEditTags.editLocation"></v-distpicker> -->
-                                    <input v-if="baseEditTags.editLocation"
-                                           type="text" name="weixin" class="info-line-text"
-                                           v-model="userInfo.baseInfo.location" placeholder="请输入所在地">
-                                    <span class="base-info-td" v-else>{{userInfo.baseInfo.location}}</span>
-                                </div>
-
-                                <!-- 性别 -->
-                                <div class="info-line">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">性&nbsp;&nbsp;别</span>
-                                    </div>
-
-                                    <!-- 编辑性别 -->
-                                    <div v-if="baseEditTags.editSex">
-                                        <input class="base-info-radio" type="radio" name="sex" value="男"
-                                               v-model="userInfo.baseInfo.sex">
-                                        <span class="base-info-radio-font">男</span>
-                                        <input class="base-info-radio" type="radio" name="sex" value="女"
-                                               v-model="userInfo.baseInfo.sex">
-                                        <span class="base-info-radio-font">女</span>
-                                    </div>
-
-                                    <!-- 显示性别 -->
-                                    <span class="base-info-td" v-else>{{userInfo.baseInfo.sex}}</span>
-                                </div>
-
-                                <!-- 生日 -->
-                                <div class="info-line">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">生日</span>
-                                    </div>
-
-                                    <div v-if="baseEditTags.editBirthday">
-                                        <input type="date" name="birthday" class="base-info-date"
-                                               v-model="userInfo.baseInfo.birthday">
-                                    </div>
-                                    <span class="base-info-td" v-else>{{userInfo.baseInfo.birthday}}</span>
-                                </div>
-
-                                <!-- 目标院校 -->
-                                <div class="info-line">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">目标院校</span>
-                                    </div>
-
-                                    <!-- 目标院校输入框 -->
-                                    <input v-if="baseEditTags.editTargetSchool"
-                                           type="text" name="targetSchool" class="info-line-text"
-                                           v-model="userInfo.baseInfo.targetSchool" placeholder="请输入正确的考研院校名称">
-
-                                    <!-- 可见度 -->
-                                    <select v-if="baseEditTags.editTargetSchool"
-                                            name="realNameVisibility" class="info-line-select">
-                                        <option name="allVisible">所有人可见</option>
-                                        <option name="onlyFocusVisible">我关注的人可见</option>
-                                        <option name="onlyMyselfVisible">仅自己可见</option>
-                                    </select>
-
-                                    <!-- 目标院校已填写 -->
-                                    <span class="base-info-td"
-                                    v-else-if="userInfo.baseInfo.targetSchool.length>0">
-                                        <img src="@/assets/img/common/fill_in_icon.png" style="cursor: pointer;" 
-                                        @click="onlyChangeTargetSchool">
-	    								{{userInfo.baseInfo.targetSchool}}
-	    							</span>
-
-                                    <!-- 目标院校未填写 -->
-                                    <div v-else>
-                                        <img src="@/assets/img/common/fill_in_icon.png">
-                                        <span class="base-info-tip" @click="onlyChangeTargetSchool">
-		    								马上填写
-		    								<span class="base-info-td">考研目标院校，让更多的同学认识你</span>
-		    							</span>
-                                    </div>
-                                </div>
-
-                                <!-- 考研目标 -->
-                                <div class="info-line">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">考研目标</span>
-                                    </div>
-
-                                    <!-- 编辑考研目标 -->
-                                    <div v-if="baseEditTags.editPostGraduateGoal">
-                                        <input class="base-info-radio" type="radio"
-                                            name="postGraduateGoal" value="学硕"
-                                            v-model="userInfo.baseInfo.postGraduateGoal">
-                                        <span class="base-info-radio-font">学硕</span>
-
-                                        <input class="base-info-radio" type="radio"
-                                            name="postGraduateGoal" value="专硕"
-                                            v-model="userInfo.baseInfo.postGraduateGoal">
-                                        <span class="base-info-radio-font">专硕</span>
-                                    </div>
-
-                                    <!-- 考研目标已填写 -->
-                                    <span class="base-info-td"
-                                          v-else-if="userInfo.baseInfo.postGraduateGoal.length>0">
-	    								{{userInfo.baseInfo.postGraduateGoal}}
-	    							</span>
-
-                                    <!-- 考研目标未填写 -->
-                                    <div v-else>
-                                        <img src="@/assets/img/common/add_icon.png">
-                                        <span class="base-info-tip" @click="onlyChangePostGraduateGoal">
-		    								马上选择
-		    								<span class="base-info-td">考研目标，让更多的研友陪伴你</span>
-		    							</span>
-                                    </div>
-                                </div>
-
-                                <!-- 注册时间 -->
-                                <div class="info-line">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">注册时间</span>
-                                    </div>
-                                    <span class="base-info-td">{{userInfo.baseInfo.registerTime}}</span>
-                                </div>
-
-                                <!-- 本科院校 -->
-                                <div class="info-line">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">本科院校</span>
-                                    </div>
-
-                                    <!-- 目标院校输入框 -->
-                                    <input v-if="baseEditTags.editUnderGraduateSchool"
-                                           type="text" name="weixin" class="info-line-text"
-                                           v-model="userInfo.baseInfo.underGraduateSchool" placeholder="请输入本科院校">
-
-                                    <!-- 可见度 -->
-                                    <select v-if="baseEditTags.editUnderGraduateSchool"
-                                            name="realNameVisibility" class="info-line-select">
-                                        <option name="allVisible">所有人可见</option>
-                                        <option name="onlyFocusVisible">我关注的人可见</option>
-                                        <option name="onlyMyselfVisible">仅自己可见</option>
-                                    </select>
-
-                                    <!-- 已填写本科院校 -->
-                                    <span class="base-info-td"
-                                        v-else-if="userInfo.baseInfo.underGraduateSchool.length>0">
-                                        <img src="@/assets/img/common/fill_in_icon.png" style="cursor: pointer;"
-                                        @click="onlyChangeUnderGraduateSchool">
-	    								{{userInfo.baseInfo.underGraduateSchool}}
-	    							</span>
-
-                                    <!-- 无本科院校 -->
-                                    <div v-else>
-                                        <img src="@/assets/img/common/fill_in_icon.png">
-                                        <span class="base-info-tip" @click="onlyChangeUnderGraduateSchool">
-		    								马上填写
-		    								<span class="base-info-td">自己的教育信息，让更多的同学认识你</span>
-		    							</span>
-                                    </div>
-                                </div>
-
-                                <!-- 简介 -->
-                                <div :class="baseEditTags.editIntroduction?'info-line-edit':'info-line'"
-                                style="align-items: flex-start;">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">简&nbsp;&nbsp;介</span>
-                                    </div>
-
-                                    <!-- 简介编辑框 -->
-                                    <textarea class="base-info-textarea" placeholder="请输入个人简介"
-                                              rows="4" cols="30" maxlength="70" 
-                                              v-if="baseEditTags.editIntroduction"
-                                              v-model="userInfo.baseInfo.introduction">
-	    							</textarea>
-
-                                    <!-- 已填写简介 -->
-                                    <div class="introduction-div"
-                                    v-else-if="userInfo.baseInfo.introduction.length>0">
-                                        <img src="@/assets/img/common/fill_in_icon.png"
-                                        @click="onlyChaneIntroduction">
-                                        <div>
-                                            <span class="base-info-td">
-        	    								{{userInfo.baseInfo.introduction}}
-        	    							</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- 无简介 -->
-                                    <div v-else>
-                                        <img src="@/assets/img/common/fill_in_icon.png">
-                                        <span class="base-info-tip" @click="onlyChaneIntroduction">
-		    								马上填写
-		    								<span class="base-info-td">自己的个人介绍，让更多人了解真实的你</span>
-		    							</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end of 基本信息 -->
-
-                        <!-- 联系信息 -->
-                        <div class="base-info">
-                            <!-- 联系信息标题 -->
-                            <div class="contact-title">
-                                <span class="base-title-font">联系信息</span>
-                                <div class="base-divider"></div>
-                                <span class="edit-save" v-if="!contactInfoEdit"
-                                      @click="changeContactInfoEdit('edit')">
-	    							编辑
-	    						</span>
-                                <span class="edit-save" v-else @click="changeContactInfoEdit('save')">保存</span>
-                            </div>
-
-                            <!-- 联系信息内容 -->
-                            <div class="contact-info-content">
-                                <!-- 微信 -->
-                                <div class="info-line" style="margin-top: 24px;">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">微信</span>
-                                    </div>
-
-                                    <!-- 微信号输入框 -->
-                                    <input v-if="contactEditTags.editWeixin"
-                                           type="text" name="weixin" class="info-line-text"
-                                           v-model="userInfo.contactInfo.weixinName" placeholder="请输入正确的微信号">
-
-                                    <!-- 微信号已填写 -->
-                                    <span class="base-info-td" v-else-if="userInfo.contactInfo.weixinName.length>0">
-	    								{{userInfo.contactInfo.weixinName}}
-	    							</span>
-
-                                    <!-- 微信号未填写 -->
-                                    <div v-else>
-                                        <img src="@/assets/img/common/fill_in_icon.png">
-                                        <span class="base-info-tip" @click="changeWeixinTag">
-		    								马上填写
-		    								<span class="contact-info-td">你的微信信息</span>
-		    							</span>
-                                    </div>
-                                </div>
-
-                                <!-- qq -->
-                                <div class="info-line">
-                                    <div class="info-line-left">
-                                        <span class="base-info-th">QQ</span>
-                                    </div>
-
-                                    <input v-if="contactEditTags.editQQ"
-                                           type="text" name="weixin" class="info-line-text"
-                                           v-model="userInfo.contactInfo.qqName" placeholder="请输入正确的QQ号">
-
-                                    <span class="base-info-td" v-else-if="userInfo.contactInfo.qqName.length>0">
-	    								{{userInfo.contactInfo.qqName}}
-	    							</span>
-                                    <div v-else>
-                                        <img src="@/assets/img/common/fill_in_icon.png">
-                                        <span class="base-info-tip" @click="changeQQTag">
-		    								马上填写
-		    								<span class="contact-info-td">QQ信息</span>
-		    							</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- end of 联系信息内容 -->
-                        </div>
-                        <!-- end of 联系信息 -->
-                    </div>
-                    <!-- end of 编辑个人信息区域 -->
-
                     <!-- 文章内容(无帖子) -->
-                    <div class="null-article-content" v-else-if="posts.length===0">
+                    <div class="null-article-content" v-if="posts.length===0">
                         <div class="article-content-div">
                             <img src="@/assets/img/common/edit_article.png">
                             <span>还没有文章，开始<span style="color: #1296DB; cursor: pointer;">写第一篇文章</span></span>
@@ -480,8 +146,51 @@
 
                 <!-- 我的信息区域 -->
                 <div class="right">
+                    <!-- 用户功能 -->
+                    <div class="user-function">
+                        <div class="function-item" @click="changeShowFocusList">
+                            <span class="function-item-num">{{userInfo.attentionNum}}</span>
+                            <span class="function-item-font" :style="showFocusList?'color: #1296DB;':''">
+                                关注
+                            </span>
+                        </div>
+                        <div class="function-item"
+                             style="border-left: 1px solid #D7D7D7; border-right: 1px solid #D7D7D7;">
+                            <span>{{userInfo.myFan}}</span>
+                            <span class="function-item-font">粉丝</span>
+                        </div>
+                        <div class="function-item">
+                            <span>{{userInfo.postNum}}</span>
+                            <span class="function-item-font">帖子</span>
+                        </div>
+                    </div>
+                    <!-- end of 用户功能 -->
+
                     <!-- 关注列表区域 -->
-                    <FocusList :userInfo="userInfo"></FocusList>
+                    <div class="userinfo-edit" v-if="showFocusList">
+                        <div class="user-focuslist">
+                            <!-- 关注列表标题区域 -->
+                            <div class="focuslist-title">
+                                <span class="focuslist-title-font">关注列表</span>
+                                <!-- 收起按钮区域 -->
+                                <div class="focuslist-title-packup" @click="changeShowFocusList">
+                                    <img src="@/assets/img/common/packup_icon.png">
+                                    <span>收回</span>
+                                </div>
+                            </div>
+
+                            <div class="focuslist-content">
+                                <div class="focuslist-content-row"
+                                v-for="(person,index) in userInfo.focusList" :key="index">
+                                    <img :src="require('@/assets/img/common/'+person.headPortrait+'.png')">
+                                    <div class="focuslist-row-right">
+                                        <span style="color: #1296DB;">{{person.name}}</span>
+                                        <span>{{person.introduction}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- end of 关注列表区域 -->
 
                     <div class="userinfo-edit">
@@ -561,13 +270,6 @@
                             </div>
                             <!-- end of 个人信息显示区域 -->
                         </div>
-                        <div class="edit-bottom">
-                            <div class="bottom-item" @click="changeEditTag">
-                                <span v-if="!editTag">编辑个人信息</span>
-                                <span v-else>返回个人主页</span>
-                                <img src="@/assets/img/common/edit_userinfo.png">
-                            </div>
-                        </div>
                     </div>
 
                     <!-- 网站版权信息区域 -->
@@ -586,18 +288,17 @@
     import VDistpicker from 'v-distpicker'
     import Copyright from '@/component/Copyright'
     import UserPageNav from '@/component/UserPageNav'
-    import FocusList from '@/component/FocusList'
     export default {
-        name: "My",
+        name: "Your",
         components: {
             Copyright,
-            UserPageNav,
-            FocusList
+            UserPageNav
         },
         data(){
             return {
                 currentRouter: null,
                 completeDegree: 0,                          // 基本信息完成度
+                showFocusList: false,                       // 显示关注列表
                 // 后台获取的用户数据
                 userInfo: {
                     email: '1234567890@qq.com',
@@ -612,7 +313,7 @@
                         location: "",                       // 所在地
                         sex: "男",							// 性别
                         birthday: "",						// 生日
-                        targetSchool: "",					// 目标院校
+                        targetSchool: "华中科技大学",			// 目标院校
                         postGraduateGoal: "",			    // 考研目标(专硕/学硕)
                         registerTime: "2021-01-21",			// 注册时间
                         underGraduateSchool: "",			// 本科院校
@@ -639,24 +340,6 @@
                     postNum: 0,								// 我的帖子
                     draftNum: 0,							// 草稿箱
                     myFan: 0								// 我的粉丝
-                },
-                editTag: false,								// 编辑个人信息标志
-                baseInfoEdit: false,						// 编辑所有基本信息标志 或 保存基本信息标志
-                baseEditTags: {
-                    editNickName: false,					// 编辑昵称标志
-                    editRealName: false,					// 编辑真实姓名标志
-                    editLocation: false,					// 编辑所在地标志
-                    editSex: false,							// 编辑性别标志
-                    editBirthday: false,					// 编辑生日标志
-                    editTargetSchool: false,				// 编辑目标院校标志
-                    editPostGraduateGoal: false,            // 编辑考研目标标志
-                    editUnderGraduateSchool: false,			// 编辑本科院校标志
-                    editIntroduction: false					// 编辑简介标志
-                },
-                contactInfoEdit: false,						// 编辑所有联系信息标志 或 保存联系信息标志
-                contactEditTags: {
-                    editWeixin: false,
-                    editQQ: false
                 },
                 posts: [{
                     title: "2022年考研大三寒假可以做什么准备？",
@@ -710,184 +393,6 @@
                 }
                 this.completeDegree = count*100/10 + '%'
                 console.log("基本信息填写完成度=",this.completeDegree)
-            },
-            changeEditTag(){
-                // 编辑个人信息
-                this.editTag = !this.editTag
-                console.log("editTag=",this.editTag)
-            },
-            changeNickName(){
-                // 修改昵称
-                this.baseEditTags.editNickName = !this.baseEditTags.editNickName
-                console.log("editNickName=",this.baseEditTags.editNickName)
-            },
-            changeRealName(){
-                // 修改真实姓名
-                this.baseEditTags.editRealName = !this.baseEditTags.editRealName
-                console.log("editRealName=",this.baseEditTags.editRealName)
-            },
-            changeLocation(){
-                // 修改所在地
-                this.baseEditTags.editLocation = !this.baseEditTags.editLocation
-                console.log("editLocation=",this.baseEditTags.editLocation)
-            },
-            changeSex(){
-                // 修改性别
-                this.baseEditTags.editSex = !this.baseEditTags.editSex
-                console.log("editSex=",this.baseEditTags.editSex)
-            },
-            changeBirthday(){
-                this.baseEditTags.editBirthday = !this.baseEditTags.editBirthday
-                console.log("editBirthday=",this.baseEditTags.editBirthday)
-            },
-            setTargetSchool(){
-                // 修改目标院校
-                this.baseEditTags.editTargetSchool = !this.baseEditTags.editTargetSchool
-                console.log("editTargetSchool=",this.baseEditTags.editTargetSchool)
-            },
-            onlyChangeTargetSchool(){
-                // 单独修改目标院校，且'编辑'按钮修改成'保存'按钮
-                this.changeBaseInfoEdit()
-                this.setTargetSchool()
-            },
-            setPostGraduateGoal(){
-                // 修改考研目标
-                this.baseEditTags.editPostGraduateGoal = !this.baseEditTags.editPostGraduateGoal
-                console.log("editPostGraduateGoal=",this.baseEditTags.editPostGraduateGoal)
-            },
-            onlyChangePostGraduateGoal(){
-                // 单独修改考研目标，且'编辑'按钮修改成'保存'按钮
-                this.changeBaseInfoEdit()
-                this.setPostGraduateGoal()
-            },
-            setUnderGraduateSchool(){
-                // 修改教育经历
-                this.baseEditTags.editUnderGraduateSchool = !this.baseEditTags.editUnderGraduateSchool
-                console.log("editUnderGraduateSchool=",this.baseEditTags.editUnderGraduateSchool)
-            },
-            onlyChangeUnderGraduateSchool(){
-                // 单独修改教育经历，且'编辑'按钮修改成'保存'按钮
-                this.changeBaseInfoEdit()
-                this.setUnderGraduateSchool()
-            },
-            setIntroduction(){
-                // 修改简介
-                this.baseEditTags.editIntroduction = !this.baseEditTags.editIntroduction
-                console.log("editIntroduction=",this.baseEditTags.editIntroduction)
-            },
-            onlyChaneIntroduction(){
-                // 单独修改简介，且'编辑'按钮修改成'保存'按钮
-                this.changeBaseInfoEdit()
-                this.setIntroduction()
-            },
-            changeBaseInfoEdit(e){
-                // 基本信息整体编辑
-                if (e === 'edit') {
-                    // 编辑
-                    // 修改昵称
-                    this.changeNickName()
-                    // 修改真实姓名
-                    this.changeRealName()
-                    // 修改所在地
-                    this.changeLocation()
-                    // 修改性别
-                    this.changeSex()
-                    // 修改生日
-                    this.changeBirthday()
-
-                    // 修改目标院校
-                    this.setTargetSchool()
-                    // 修改考研目标
-                    this.setPostGraduateGoal()
-                    // 修改教育经历
-                    this.setUnderGraduateSchool()
-                    // 修改简介
-                    this.setIntroduction()
-                }else if (e === 'save') {
-                    // 保存
-                    if (this.baseEditTags.editNickName === this.baseEditTags.editRealName &&
-                        this.baseEditTags.editRealName === this.baseEditTags.editTargetSchool &&
-                        this.baseEditTags.editTargetSchool === this.baseEditTags.editSex &&
-                        this.baseEditTags.editSex === this.baseEditTags.editUnderGraduateSchool &&
-                        this.baseEditTags.editUnderGraduateSchool === this.baseEditTags.editIntroduction &&
-                        this.baseEditTags.editIntroduction === this.baseEditTags.editLocation && 
-                        this.baseEditTags.editLocation === this.baseEditTags.editPostGraduateGoal) {
-                        // 全部保存
-                        this.changeNickName()
-                        this.changeRealName()
-                        this.changeLocation()
-                        this.changeSex()
-                        this.changeBirthday()
-
-                        this.setTargetSchool()
-                        this.setPostGraduateGoal()
-                        this.setUnderGraduateSchool()
-                        this.setIntroduction()
-                    }else if (this.baseEditTags.editTargetSchool) {
-                        // 保存目标院校
-                        this.setTargetSchool()
-                    }else if (this.baseEditTags.editPostGraduateGoal) {
-                        // 保存考研目标
-                        this.setPostGraduateGoal()
-                    }else if (this.baseEditTags.editUnderGraduateSchool) {
-                        // 保存教育经历
-                        this.setUnderGraduateSchool()
-                    }else if (this.baseEditTags.editIntroduction) {
-                        // 保存简介
-                        this.setIntroduction()
-                    }
-                }
-
-                this.baseInfoEdit = !this.baseInfoEdit
-                console.log("baseInfoEdit=",this.baseInfoEdit)
-                // 计算基本信息完成度
-                this.calculateCompleteDegree()
-            },
-            setWeixin(){
-                // 修改微信号
-                this.contactEditTags.editWeixin = !this.contactEditTags.editWeixin
-                console.log("editWeixin=",this.contactEditTags.editWeixin)
-            },
-            setQQ(){
-                // 修改QQ号
-                this.contactEditTags.editQQ = !this.contactEditTags.editQQ
-                console.log("editQQ=",this.contactEditTags.editQQ)
-            },
-            changeWeixinTag(){
-                // 单独修改'编辑微信号'标志
-                // 编辑保存按钮
-                this.changeContactInfoEdit()
-                this.setWeixin()
-            },
-            changeQQTag(){
-                // 单独修改'编辑QQ号'标志
-                // 编辑保存按钮
-                this.changeContactInfoEdit()
-                this.setQQ()
-            },
-            changeContactInfoEdit(e){
-                console.log("e=",e)
-                // 联系信息整体编辑
-                if (e === 'edit') {
-                    // 编辑
-                    this.setWeixin()
-                    this.setQQ()
-                }else if (e === 'save') {
-                    // 保存
-                    if (this.contactEditTags.editWeixin === this.contactEditTags.editQQ) {
-                        // 保存微信和QQ
-                        this.setWeixin()
-                        this.setQQ()
-                    }else if (this.contactEditTags.editWeixin === true) {
-                        // 保存微信
-                        this.setWeixin()
-                    }else if (this.contactEditTags.editQQ === true) {
-                        // 保存QQ
-                        this.setQQ()
-                    }
-                }
-                this.contactInfoEdit = !this.contactInfoEdit
-                console.log("contactInfoEdit=",this.contactInfoEdit)
             },
             getLoginName(){
                 // 获取登录名
@@ -1472,6 +977,55 @@
         border: 1px solid #E4E4E4;
         margin-top: 8px;
     }
+    .user-focuslist{
+        width: 272px;
+        margin: 0px auto;
+    }
+    .focuslist-title{
+        width: 100%;
+        height: 47px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        color: #8B8B8B;
+    }
+    .focuslist-title-font{
+        color: #000000;
+        margin-left: 14px;
+    }
+    .focuslist-title-packup{
+        cursor: pointer;
+    }
+    .focuslist-title-packup img{
+        padding-right: 7px;
+    }
+    .focuslist-content-row{
+        width: 100%;
+        height: 55px;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        border-top: 2px solid #EEEEEE;
+    }
+    .focuslist-content-row img{
+        width: 34px;
+        height: 34px;
+        margin-right: 12px;
+    }
+    .focuslist-row-right{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        font-size: 12px;
+        color: #8B8B8B;
+    }
+    .focuslist-row-right span{
+        line-height: 18px;
+    }
     .edit-top{
         width: 272px;
         height: 75px;
@@ -1492,15 +1046,10 @@
         font-weight: 400;
         font-family: Microsoft YaHei;
     }
-    .edit-top button:hover{
-        cursor: pointer;
-        opacity: 0.9;
-    }
     .edit-mid{
         width: 272px;
         min-height: 110px;
         margin: 0px auto;
-        border-bottom: 2px solid #EEEEEE;
     }
     .mid-font-div{
         padding: 18px 0px 28px 14px;
