@@ -6,15 +6,15 @@
                 <img src="@/assets/img/common/user_background.png" class="top-backgroud">
                 <!-- 用户信息 -->
                 <div class="top-userinfo">
-                    <img :src="require('@/assets/img/common/'+circleInfo.circleImg+'.png')"
-                    class="top-headPortrait">
+                    <img :src="this.imgBaseUrl+this.$store.state.clickSchoolImg"
+                         class="top-headPortrait">
                     <!-- 用户名 -->
                     <div class="userinfo-name-div">
                         <span class="userinfo-name">{{circleInfo.introduction}}</span>
                     </div>
                     <!-- 关注和私信按钮 -->
                     <div class="userinfo-btn">
-                        <button class="btn-focus-on">关注</button>
+                        <button class="btn-focus-on">加入</button>
                         <button class="btn-private-msg">私信</button>
                     </div>
                 </div>
@@ -30,63 +30,57 @@
             <div class="mid">
                 <!-- 圈子详情 -->
                 <div class="article-left">
-                	<!-- 圈子详情导航 -->
+                    <!-- 圈子详情导航 -->
                     <div class="left-nav">
-                    	<router-link to="circledetail" class="left-nav-link"
-                    	style="border-right: 2px solid #D7D7D7;">
-                    		<span>最新动态</span>
-                    	</router-link>
-                    	<router-link to="circle" class="left-nav-link">
-                    		<span>圈子热门</span>
-                    	</router-link>
+                        <router-link to="circledetail" class="left-nav-link"
+                                     style="border-right: 2px solid #D7D7D7;">
+                            <span>最新动态</span>
+                        </router-link>
+                        <router-link to="circle" class="left-nav-link">
+                            <span>圈子热门</span>
+                        </router-link>
                     </div>
-                 	<!-- end of 圈子详情导航 -->
+                    <!-- end of 圈子详情导航 -->
 
                     <div class="post-content-div" v-for="(post,index) in posts" :key="index">
-	                	<div class="post-content">
-	                		<img :src="require('@/assets/img/common/'+post.headPortrait+'.png')">
-	                		<div class="post-content-font">
-		                		<span>{{post.author}}：</span>
-		                		<span>{{post.content}}</span>
-	                		</div>
-	                	</div>
+                        <div class="post-content">
+                            <img :src="imgBaseUrl1+post.headPortrait">
+                            <div class="post-content-font">
+                                <span>{{post.author}}：</span>
+                                <span>{{post.content}}</span>
+                            </div>
+                        </div>
 
-	                	<div class="post-options-div">
-	                		<!-- 收藏 -->
-	                		<div class="post-options-item">
-	                			<img src="@/assets/img/common/collected.png" v-if="post.options.isCollect">
-	                			<img src="@/assets/img/common/collection.png" v-else>
-	                			<span v-if="post.options.isCollect">已收藏</span>
-	                			<span v-else>收藏</span>
-	                		</div>
-	                		<!-- 分享 -->
-	                		<div class="post-options-item">
-	                			<img src="@/assets/img/common/shared.png" v-if="post.options.isShare">
-	                			<img src="@/assets/img/common/share.png" v-else>
-	                			<span v-if="post.options.isCollect">已分享</span>
-	                			<span v-else>分享</span>
-	                		</div>
-	                		<!-- 收藏 -->
-	                		<div class="post-options-item">
-	                			<img src="@/assets/img/common/talked.png" v-if="post.options.isTalk">
-	                			<img src="@/assets/img/common/talk.png" v-else>
-	                			<span v-if="post.talkCount<10000">{{post.talkCount}}条</span>
-	                			<span v-else>{{post.talkCount/10000}}万条评论</span>
-	                		</div>
-	                		<!-- 点赞 -->
-	                		<div class="post-options-item">
-	                			<img src="@/assets/img/common/praise_active.png" v-if="post.options.isPraise">
-	                			<img src="@/assets/img/common/praise.png" v-else>
-	                			<span v-if="post.praiseCount<10000">{{post.praiseCount}}</span>
-	                			<span v-else>{{post.praiseCount/10000}}万</span>
-	                		</div>
-	                		<span>{{post.createTime}}</span>
-	                	</div>
-	                </div>
+                        <div class="post-options-div">
+                            <!-- 收藏 -->
+                            <div class="post-options-item">
+                                <img src="@/assets/img/common/collected.png" v-if="post.option.collect">
+                                <img src="@/assets/img/common/collection.png" v-else>
+                                <span v-if="post.option.collect">已收藏</span>
+                                <span v-else>收藏</span>
+                            </div>
+
+                            <!-- 收藏 -->
+                            <div class="post-options-item">
+                                <img src="@/assets/img/common/talked.png" v-if="post.option.talk">
+                                <img src="@/assets/img/common/talk.png" v-else>
+                                <span v-if="post.talkCount<10000">{{post.talkCount}}条</span>
+                                <span v-else>{{post.talkCount/10000}}万条评论</span>
+                            </div>
+                            <!-- 点赞 -->
+                            <div class="post-options-item">
+                                <img src="@/assets/img/common/praise_active.png" v-if="post.option.praise">
+                                <img src="@/assets/img/common/praise.png" v-else>
+                                <span v-if="post.praiseCount<10000">{{post.praiseCount}}</span>
+                                <span v-else>{{post.praiseCount/10000}}万</span>
+                            </div>
+                            <span>{{post.createTime}}</span>
+                        </div>
+                    </div>
                 </div>
-                
 
-	                
+
+
                 <!-- end of 圈子详情 -->
 
                 <!-- 我的信息区域 -->
@@ -109,7 +103,9 @@
 </template>
 
 <script>
-	import {getUrlInfo} from '@/util.js'
+    import {getUrlInfo} from '@/util.js'
+    import {getCircleComment} from '@/network/circle.js'
+
     import Copyright from '@/component/Copyright'
     import CircleDetailNav from '@/component/CircleDetailNav'
     import FocusList from '@/component/FocusList'
@@ -128,9 +124,11 @@
                 completeDegree: 0,                          // 基本信息完成度
                 isTourist: false,                           // 是否是游客
                 circleInfo: {
-                	circleImg: "scuec_university_logo",		// 圈子照片
-                	introduction: "笃信好学,自然宽和"			// 圈子简介
+                    circleImg: "scuec_university_logo",		// 圈子照片
+                    introduction:this.$store.state.clickSchoolIntroduce			// 圈子简介
                 },
+                imgBaseUrl:'http://47.96.234.106:8080/images/school/',
+                imgBaseUrl1:'http://47.96.234.106:8080/images/',
                 // 后台获取的用户数据
                 userInfo: {
                     email: '1234567890@qq.com',
@@ -155,11 +153,10 @@
                         name: "林月半",
                         headPortrait: "head_portrait1",
                         introduction: "一个努力上进、很好相处的学长！"
-                    },
-                    {
-                        name: "怪兽小天",
-                        headPortrait: "head_portrait4",
-                        introduction: "一个喜欢交流的人，希望在这里找到志同..."
+                    }, {
+                            name: "怪兽小天",
+                            headPortrait: "head_portrait4",
+                            introduction: "一个喜欢交流的人，希望在这里找到志同..."
                     }],
                     collectionNum: 1,						// 我的收藏
                     historyNum: 10,							// 浏览历史
@@ -169,44 +166,7 @@
                     draftNum: 0,							// 草稿箱
                     myFan: 0								// 我的粉丝
                 },
-                posts: [{
-        			title: "新手小白如何着手考研？",
-        			content: "2022年考生，自己已经买了徐涛老师的2022年政治全程协议班，有没有一起拼课的啊？大家也可以一起复习，互相加油！ ​​",
-        			author: "差不多先生将军2333",
-                    email: "123456789@qq.com",
-        			headPortrait: "user_head1",				// 头像
-        			praiseCount: 24000,						// 点赞量
-        			talkCount: 1125,						// 评论量
-        			postImg: "post_img1",					// 附图
-        			options: {								// 是否赞/踩/收藏/分享/评论
-        				isPraise: true,
-        				isTrample: false,
-        				isCollect: true,
-        				isShare: true,
-        				isTalk: true
-        			},
-                    reprintedPlace: null,                   // 转载地址
-        			createTime: "2021/01/14"
-        		},
-        		{
-        			title: "新手小白如何着手考研？",
-        			content: "2022年考生，自己已经买了徐涛老师的2022年政治全程协议班，有没有一起拼课的啊？大家也可以一起复习，互相加油！ ​​",
-        			author: "差不多先生将军2333",
-                    email: "123456789@qq.com",
-        			headPortrait: "user_head1",				// 头像
-        			praiseCount: 24000,						// 点赞量
-        			talkCount: 1125,						// 评论量
-        			postImg: "post_img1",					// 附图
-        			options: {								// 是否赞/踩/收藏/分享/评论
-        				isPraise: false,
-        				isTrample: false,
-        				isCollect: false,
-        				isShare: false,
-        				isTalk: false
-        			},
-                    reprintedPlace: null,                   // 转载地址
-        			createTime: "2021/01/14"
-        		}]
+                posts: []
             }
         },
         methods:{
@@ -227,9 +187,14 @@
                 this.currentRouter = urlInfo.currentRouter
                 console.log('currentRouter=',this.currentRouter)
             },
-			goCircleDetail(){
-        		this.$router.push('/circledetail')
-			}
+            goCircleDetail(){
+                this.$router.push('/circledetail')
+            },
+            getCircleComment(){
+                getCircleComment(this.$store.state.clickCircleId).then(res=>{
+                    this.posts=res.comment;
+                })
+            }
         },
         mounted(){
             // 暂时等于，userInfo的信息从后端传入，与后端连接上时，782行删除
@@ -239,6 +204,8 @@
             this.getNickName()
             // 设置当前页面的CSS
             this.checkCurrentRouter()
+            //获取评论
+            this.getCircleComment();
         }
     }
 </script>
@@ -350,9 +317,9 @@
         margin-top: 53px;
     }
     .left-nav{
-    	width: 100%;
-    	height: 62px;
-    	background: #FFFFFF;
+        width: 100%;
+        height: 62px;
+        background: #FFFFFF;
         border: 1px solid #E4E4E4;
         display: flex;
         flex-direction: row;
@@ -361,20 +328,20 @@
         font-size: 14px;
     }
     .left-nav-link{
-    	width: 291px;
-    	height: 37px;
-    	display: flex;
+        width: 291px;
+        height: 37px;
+        display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
     }
     .router-link-active{
-    	color: #50B1DB;
+        color: #50B1DB;
     }
     /*end of 圈子详情导航栏*/
     .post-content-div{
-    	width: 100%;
-    	background: #FFFFFF;
+        width: 100%;
+        background: #FFFFFF;
         border: 1px solid #E4E4E4;
         display: flex;
         flex-direction: column;
@@ -383,51 +350,51 @@
         margin-top: 8px;
     }
     .post-content{
-    	width: 100%;
-    	margin-left: 15px;
-    	margin-top: 14px;
-    	font-size: 16px;
-    	color: #000000;
-    	display: flex;
+        width: 100%;
+        margin-left: 15px;
+        margin-top: 14px;
+        font-size: 16px;
+        color: #000000;
+        display: flex;
         flex-direction: row;
         justify-content: flex-start;
         align-items: flex-start;
     }
     .post-content img{
-    	width: 50px;
-    	height: 50px;
+        width: 50px;
+        height: 50px;
     }
     .post-content-font{
-    	width: 488px;
-    	margin-left: 17px;
+        width: 488px;
+        margin-left: 17px;
         line-height: 25px;
         margin-top: 16px;
-    	display: flex;
+        display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-items: flex-start;
     }
     .post-options-div{
-    	width: 549px;
-    	height: 44px;
-    	border-top: 2px solid #E4E4E4;
-    	margin-top: 26px;
-    	display: flex;
+        width: 549px;
+        height: 44px;
+        border-top: 2px solid #E4E4E4;
+        margin-top: 26px;
+        display: flex;
         flex-direction: row;
         justify-content: space-around;
         align-items: center;
         font-size: 14px;
     }
     .post-options-item{
-    	width: 70px;
-    	height: 15px;
-    	display: flex;
+        width: 70px;
+        height: 15px;
+        display: flex;
         flex-direction: row;
         justify-content: center;
         align-items: center;
     }
     .post-options-item span{
-    	margin-left: 3px;
+        margin-left: 3px;
     }
     /*end of 左侧内容*/
     /*右侧内容*/
@@ -441,10 +408,10 @@
 	.当前包裹子组件的类名 /deep/ .子组件中要修改样式的类名
     */
     .right /deep/ .right-post{
-    	border: 1px solid #E4E4E4;
+        border: 1px solid #E4E4E4;
     }
     .right /deep/ .line-title{
-    	width: 67%;
+        width: 67%;
     }
     .user-function{
         background: #FFFFFF;

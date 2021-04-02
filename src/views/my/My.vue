@@ -21,7 +21,25 @@
                 <!-- end of 用户信息 -->
 
                 <!-- 链接 -->
-                <UserPageNav></UserPageNav>
+                <div class="top-nav">
+                    <div class="nav-content">
+                        <div :class="currentRouter === 'my'?'nav-link-div-active':'nav-link-div'">
+                            <router-link to="my" class="nav-link">
+                                <span>主页</span>
+                            </router-link>
+                        </div>
+                        <div :class="currentRouter === 'collection'?'nav-link-div-active':'nav-link-div'">
+                            <router-link to="collection" class="nav-link">
+                                <span>收藏</span>
+                            </router-link>
+                        </div>
+                        <div class="nav-link-div">
+                            <router-link to="mycircle" class="nav-link">
+                                <span>圈子</span>
+                            </router-link>
+                        </div>
+                    </div>
+                </div>
                 <!-- end of 链接 -->
             </div>
             <!-- end of 内容顶部链接 -->
@@ -387,7 +405,7 @@
                     <div class="article-content" v-else>
                         <div class="post-line" v-for="(post,index) in posts" :key="index">
                             <div class="article-content-top">
-                                <img :src="require('@/assets/img/common/'+userInfo.headPortrait+'.png')">
+                                <img :src="this.imgBaseUrl+post.headPortrait">
                                 <div class="content-top-right">
                                     <span class="content-top-username">用户{{userInfo.email}}</span>
                                     <span class="content-top-identity">
@@ -398,14 +416,14 @@
                             <span class="post-title">{{post.title}}</span>
 
                             <div class="post-content">
-                                <div class="post-img" v-if="post.postImg!=null">
+                                <div class="post-img" v-if="post.authorHeadPortrait!=null">
                                     <!-- <img :src="post.postImg" class="post-img"> -->
-                                    <img :src="require('@/assets/img/common/'+post.postImg+'.png')"
+                                    <img :src="this.imgBaseUrl+post.authorHeadPortrait"
                                          class="post-img">
                                 </div>
-                                <div :class="post.postImg!=null?'post-text':'post-text-nullImg'">
+                                <div :class="post.headPortrait!=null?'post-text':'post-text-nullImg'">
 		    						<span>
-		    							{{post.author}}：{{post.content}}
+		    							{{post.authorName}}：{{post.content}}
 		    							<span class="post-more">了解详情</span>
 		    							<img src="../../assets/img/common/more_icon.png" class="more-icon">
 		    						</span>
@@ -418,25 +436,19 @@
                                 <div class="bottom-left">
                                     <!-- 作者名 -->
                                     <div class="author-name">
-                                        <span v-if="post.reprintedPlace==null">原创</span>
-                                        <span v-else>转载&nbsp;
-			    							<span style="color: #1296DB;">{{post.reprintedPlace}}</span>
-			    						</span>
-
+                                        <span >原创</span>
                                     </div>
                                     <!-- 赞 -->
                                     <div class="praise-div">
                                         <!-- 已点赞图标 -->
                                         <img src="@/assets/img/common/praise_active.png"
-                                        v-if="post.options.isPraise">
+                                        v-if="post.option.praise">
                                         <img src="../../assets/img/common/praise.png" v-else>
                                         <span v-if="post.praiseCount<10000">{{post.praiseCount}}</span>
                                         <span v-else>{{post.praiseCount/10000}}万</span>
                                     </div>
                                     <!-- 踩 -->
-                                    <div class="trample-div">
-                                        <img src="../../assets/img/common/trample.png">
-                                    </div>
+
                                 </div>
                                 <!-- end of 左侧功能 -->
 
@@ -445,23 +457,16 @@
                                     <div class="post-function" style="margin-left: 25px;">
                                         <!-- 已收藏图标 -->
                                         <img src="@/assets/img/common/collected.png"
-                                        v-if="post.options.isCollect">
+                                        v-if="post.option.collect">
                                         <img src="../../assets/img/common/collection.png" v-else>
-                                        <span v-if="post.options.isCollect">已收藏</span>
+                                        <span v-if="post.option.collect">已收藏</span>
                                         <span v-else>收藏</span>
-                                    </div>
-                                    <div class="post-function">
-                                        <img src="@/assets/img/common/shared.png"
-                                        v-if="post.options.isShare">
-                                        <img src="@/assets/img/common/share.png" v-else>
-                                        <span v-if="post.options.isShare">已分享</span>
-                                        <span v-else>分享</span>
                                     </div>
                                     <div class="post-function" style="width: 90px;">
                                         <img src="@/assets/img/common/talked.png"
-                                        v-if="post.options.isTalk">
+                                        v-if="post.option.talk">
                                         <img src="@/assets/img/common/talk.png" v-else>
-                                        <span v-if="post.options.isTalk">已评论</span>
+                                        <span v-if="post.option.talk">已评论</span>
                                         <span v-else-if="post.talkCount<10000">{{post.talkCount}}条评论</span>
                                         <span v-else>{{post.talkCount/10000}}万条评论</span>
                                     </div>
@@ -480,9 +485,9 @@
 
                 <!-- 我的信息区域 -->
                 <div class="right">
-                    <!-- 关注列表区域 -->
+                    <!-- 用户功能 -->
                     <FocusList :userInfo="userInfo"></FocusList>
-                    <!-- end of 关注列表区域 -->
+                    <!-- end of 用户功能 -->
 
                     <div class="userinfo-edit">
                         <div class="edit-top">
@@ -503,7 +508,7 @@
                             <!-- 个人信息显示区域 -->
                             <!-- 真实姓名显示 -->
                             <div v-if="userInfo.baseInfo.realName.length>0"
-                            class="show-personalInfo-line" style="border: none;">
+                            class="show-personalInfo-line" style="border: none; margin-top: 8px;">
                                 <img src="@/assets/img/common/realName_icon.png" class="show-personalInfo-img">
                                 <span class="show-personalInfo-font">{{userInfo.baseInfo.realName}}</span>
                             </div>
@@ -583,21 +588,19 @@
 
 <script>
     import {getUrlInfo} from '@/util.js'
+    import {getMyPosts} from '@/network/Tribune.js'
     import VDistpicker from 'v-distpicker'
     import Copyright from '@/component/Copyright'
-    import UserPageNav from '@/component/UserPageNav'
-    import FocusList from '@/component/FocusList'
     export default {
         name: "My",
         components: {
-            Copyright,
-            UserPageNav,
-            FocusList
+            Copyright
         },
         data(){
             return {
                 currentRouter: null,
-                completeDegree: 0,                          // 基本信息完成度
+                completeDegree: 0,
+                imgBaseUrl:'http://47.96.234.106:8080/images/',                       // 基本信息完成度
                 // 后台获取的用户数据
                 userInfo: {
                     email: '1234567890@qq.com',
@@ -622,16 +625,6 @@
                         weixinName: "",						// 微信名
                         qqName: ""							// qq号
                     },
-                    focusList: [{
-                        name: "林月半",
-                        headPortrait: "head_portrait1",
-                        introduction: "一个努力上进、很好相处的学长！"
-                    },
-                    {
-                        name: "怪兽小天",
-                        headPortrait: "head_portrait4",
-                        introduction: "一个喜欢交流的人，希望在这里找到志同..."
-                    }],
                     collectionNum: 1,						// 我的收藏
                     historyNum: 10,							// 浏览历史
                     attentionNum: 2,						// 我的关注
@@ -658,47 +651,20 @@
                     editWeixin: false,
                     editQQ: false
                 },
-                posts: [{
-                    title: "2022年考研大三寒假可以做什么准备？",
-                    content: "看完后按照说的四个步骤实施，如果不上岸，或者成绩不理想，请你回来喷我！言简意赅，通俗易懂，看完你就知道怎么做了。第一步，考研择校，考研择校，是考研中最重要的事情，如果......",
-                    author: "林月半",
-                    headPortrait: "head_portrait1",			// 头像
-                    praiseCount: 40,						// 点赞量
-                    talkCount: 2,							// 评论量
-                    postImg: null,							// 附图
-                    options: {
-                        isPraise: true,
-                        isTrample: false,
-                        isCollect: true,
-                        isShare: true,
-                        isTalk: true
-                    },
-                    reprintedPlace: null,					// 转载地址
-                    createTime: "2021/01/18"
-                },{
-                    title: "新手小白如何着手考研？",
-                    content: "考研的胖友们速速集合，这篇文章可以解决你备考全程绝大部分问题，从考研择校、考研核心信息、英语、政治、数学、专业课超强可落地复习经验，具体到英语单词怎么背、怎么整理笔记、专业课怎么复习、复试如何脱颖而出等......",
-                    author: "林月半",
-                    headPortrait: "head_portrait1",			// 头像
-                    praiseCount: 57,						// 点赞量
-                    talkCount: 10,							// 评论量
-                    postImg: "post_img1",					// 附图
-                    options: {
-                        isPraise: false,
-                        isTrample: false,
-                        isCollect: false,
-                        isShare: false,
-                        isTalk: false
-                    },
-                    reprintedPlace: "知乎",					// 转载地址
-                    createTime: "2021/01/14"
-                }]
+                focusList: [{
+                    name: "林月半",
+                    headPortrait: "head_portrait1",
+                    introduction: "一个努力上进、很好相处的学长！"
+                },
+                    {
+                        name: "怪兽小天",
+                        headPortrait: "head_portrait4",
+                        introduction: "一个喜欢交流的人，希望在这里找到志同..."
+                    }],
+                posts: []
             }
         },
         methods:{
-            changeShowFocusList() {
-                this.showFocusList = !this.showFocusList
-            },
             calculateCompleteDegree(){
                 // 计算基本信息填写完成度
                 // 注册时间不需要计入完成度
@@ -905,6 +871,13 @@
                 let urlInfo = getUrlInfo()
                 this.currentRouter = urlInfo.currentRouter
                 console.log('currentRouter=',this.currentRouter)
+            },
+            getMyPosts(){
+                getMyPosts(this.$store.state.myEmail).then(res=>{
+                    console.log(this.$store.state.myEmail);
+                    console.log(res);
+                    this.posts=res.myConversation;
+                })
             }
         },
         mounted(){
@@ -918,6 +891,8 @@
             this.checkCurrentRouter()
             // 计算基本信息完成度
             this.calculateCompleteDegree()
+            //获取posts
+            this.getMyPosts();
         }
     }
 </script>
@@ -1009,6 +984,51 @@
     .btn-private-msg{
         background: #6A6E7A;
         border: 2px solid #6A6E7A;
+    }
+    .top-nav{
+        width: 918px;
+        height: 44px;
+        background: #FFFFFF;
+        border: 1px solid #E4E4E4;
+        position: relative;
+        top: -4px;
+        display: flex;
+        justify-content: center;
+    }
+    .nav-content{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 494px;
+        height: 100%;
+    }
+    .nav-link-div{
+        width: 41px;
+        height: 42px;
+    }
+    .nav-link-div-active{
+        width: 41px;
+        height: 42px;
+        border-bottom: 2px solid #FFDA1F;
+    }
+    .nav-link-div:hover{
+        border-bottom: 2px solid #FFDA1F;
+    }
+    .nav-link{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .nav-link span{
+        font-size: 14px;
+        font-weight: 400;
+        color: #000000;
+        width: 28px;
+        height: 14px;
+        font-family: Microsoft YaHei;
     }
     .mid{
         min-height: 35%;
@@ -1450,7 +1470,6 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        cursor: pointer;
     }
     .function-item span{
         font-size: 14px;
@@ -1530,7 +1549,6 @@
         border-radius: 4px;
         position: relative;
         bottom: 7px;
-        margin-bottom: 8px;
     }
     .show-personalInfo-line{
         width: 100%;

@@ -6,7 +6,7 @@
             <div class="top-left">
                 <img src="../../../assets/img/common/img_return.png" class="top-img">
                 <div class="top-rtn">
-                    <span>上一步</span>
+                    <span @click="backPage">上一步</span>
                 </div>
             </div>
             <div class="top-right">
@@ -18,31 +18,27 @@
         <div class="mid-div">
             <div>
                 <p class="mid-p">目标院校</p>
-                <select class="mid-select" name="tagetShool" @change="setSchoolsName">
-                    <option>清华大学</option>
-                    <option>北京大学</option>
-                    <option>武汉大学</option>
-                    <option>华中科技大学</option>
-                </select>
+                <input type="text" name="undergraduate" class="mid-input" required="required"
+                       placeholder="请填写目标院校全名" v-model="targetSchool">
             </div>
             <div>
                 <p class="mid-p">本科院校</p>
                 <input type="text" name="undergraduate" class="mid-input" required="required"
-                       placeholder="请填写本科院校全名">
+                       placeholder="请填写本科院校全名" v-model="mySchool">
             </div>
             <div>
                 <p class="mid-p">
                     您是想<span class="mid-tip">（三选一）</span>：
                 </p>
-                <input type="radio" name="learnType" value="zhuanShuo"><span class="radio-tip">专硕</span>
-                <input type="radio" name="learnType" value="xueShuo"><span class="radio-tip">学硕</span>
-                <input type="radio" name="learnType" value="other"><span class="radio-tip">其他</span>
+                <input type="radio" name="learnType" value="专硕" v-model="masterOption"><span class="radio-tip" >专硕</span>
+                <input type="radio" name="learnType" value="学硕" v-model="masterOption"><span class="radio-tip" >学硕</span>
+                <input type="radio" name="learnType" value="其他" v-model="masterOption"><span class="radio-tip" >其他</span>
             </div>
         </div>
 
         <!-- 下一步/上一步区域 -->
         <div class="bottom-div">
-            <button class="btn">完成注册</button>
+            <button class="btn" @click="btnNext">完成注册</button>
             <span class="bottom-tip">注册即表示同意平台
 					<span style="color: #2A74D6;">《隐私政策》</span>和
 					<span style="color: #2A74D6;">《用户协议》</span>
@@ -52,25 +48,26 @@
 </template>
 
 <script>
-    import {getSchoolsName} from "@/network/register.js"
+    import {getSchoolsName,setRegisterInfo} from "@/network/register.js"
     export default {
         name: "RegisterSecond",
         data(){
             return{
                 mySchool:'',
-                dreamSchool:'',
+                targetSchool:'',
                 masterOption:'',
                 allSchoolName:'',
                 result:''
             }
         },
         mounted(){
-            this.getSchoolsName;
+            this.getSchoolsName();
         },
         methods:{
             getSchoolsName(){
+                console.log(111)
                 getSchoolsName().then(res=>{
-                    this.SchoolName=res;
+                    this.allSchoolName=res.allSchoolNames;
                 })
             },
             setSchoolsName(){
@@ -78,6 +75,24 @@
 
                 }
             },
+            btnNext(){
+                this.$store.commit('setMySchool',this.mySchool);
+                this.$store.commit('setDreamSchool',this.targetSchool);
+                this.$store.commit('setMasterOption',this.masterOption);
+                setRegisterInfo(this.$store.state.register).then(res=>{
+                    if(res.statu==1){
+                        this.$router.push('/registerSuccess')
+                    }else{
+                        alert("注册失败，请重新填写信息")
+                        this.$router.push('/register');
+                    }
+                })
+
+            },
+            backPage() {
+                this.$router.push('/register')
+            }
+
         }
     }
 </script>

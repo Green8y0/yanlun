@@ -1,59 +1,84 @@
 <template>
-        <div class="background">
-            <img src="@/assets/img/common/background.png" class="background-img">
+    <div class="background">
+        <img src="@/assets/img/common/background.png" class="background-img">
 
-            <!-- 登录区域 -->
-            <div class="login-div">
+        <!-- 登录区域 -->
+        <div class="login-div">
 
-                <!-- 登录区域上部分图片与提示部分 -->
-                <div class="login-top">
-                    <div class="login-top-imgdiv">
-                        <img src="@/assets/img/common/user.png" class="login-top-img">
-                    </div>
-                    <div class="login-top-textdiv">
-                        <p class="login-top-text">请使用研论账号进行登录</p>
-                    </div>
+            <!-- 登录区域上部分图片与提示部分 -->
+            <div class="login-top">
+                <div class="login-top-imgdiv">
+                    <img src="@/assets/img/common/user.png" class="login-top-img">
                 </div>
-
-                <!-- input区域 -->
-                <div class="login-mid">
-                    <!-- 账号区域 -->
-                    <p class="login-mid-user">账号</p>
-                    <div class="login-mid-inputdiv">
-                        <input type="email" name="user" class="login-mid-input" />
-                    </div>
-
-                    <!-- 密码区域 -->
-                    <div class="login-mid-pwddiv">
-                        <p class="login-mid-pwd">密码</p>
-                        <p class="login-mid-forgetpwd">忘记密码?</p>
-                    </div>
-                    <div class="login-mid-inputdiv">
-                        <input type="password" name="password" class="login-mid-input"/>
-                    </div>
-
-                    <!-- 登录按钮区域 -->
-                    <div class="login-mid-btn_submit">
-                        <button class="btn_submit">登&nbsp;&nbsp;&nbsp;录</button>
-                    </div>
-                </div><!-- end of input区域-->
-
-                <!-- 注册跳转链接区域 -->
-                <div class="login-footer">
-                    <div class="register-div">
-                        <span style="padding-left: 45px;">无账号?</span>
-                        <a href="register" style="display: inline; color: #2A74D6;">立即注册</a>
-                    </div>
+                <div class="login-top-textdiv">
+                    <p class="login-top-text">请使用研论账号进行登录</p>
                 </div>
-
             </div>
+
+            <!-- input区域 -->
+            <div class="login-mid">
+                <!-- 账号区域 -->
+                <p class="login-mid-user">邮箱号</p>
+                <div class="login-mid-inputdiv">
+                    <input type="email" name="user" class="login-mid-input" v-model="email"/>
+                </div>
+
+                <!-- 密码区域 -->
+                <div class="login-mid-pwddiv">
+                    <p class="login-mid-pwd">密码</p>
+                    <p class="login-mid-forgetpwd" @click="goForget">忘记密码?</p>
+                </div>
+                <div class="login-mid-inputdiv">
+                    <input type="password" name="password" class="login-mid-input" v-model="password"/>
+                </div>
+
+                <!-- 登录按钮区域 -->
+                <div class="login-mid-btn_submit">
+                    <button class="btn_submit" @click="Login">登&nbsp;&nbsp;&nbsp;录</button>
+                </div>
+            </div><!-- end of input区域-->
+
+            <!-- 注册跳转链接区域 -->
+            <div class="login-footer">
+                <div class="register-div">
+                    <span style="padding-left: 45px;">无账号?</span>
+<!--                    <a href="register" style="display: inline; color: #2A74D6;">立即注册</a>-->
+                    <router-link to="/register" style="display: inline; color: #2A74D6;">立即注册</router-link>
+                </div>
+            </div>
+
         </div>
+    </div>
 
 </template>
 
 <script>
+    import {login} from "@/network/login";
+
     export default {
-        name: "Login"
+        name: "Login",
+        data(){
+            return{
+                email:'',
+                password:''
+            }
+        },
+        methods:{
+            Login(){
+                login(this.email,this.password).then(res=>{
+                    if(res.statu==1){
+                        this.$store.commit("changeLogin");
+                        this.$store.commit("setMyEmail",this.email);
+                        this.$router.push('/schools');
+                    }else{
+                        alert("账号或者密码错误");
+                    }
+                })
+            },
+            goForget(){
+                this.$router.push('/forget')
+            }
+        }
     }
 </script>
 

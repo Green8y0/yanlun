@@ -5,13 +5,13 @@
             <!-- 返回按钮与注册title区域 -->
             <div class="top-div">
                 <div class="top-left">
-                    <img src="../../../assets/img/common/img_return.png" class="top-img">
-                    <div class="top-rtn">
-                        <span @click="returnLogin">返回</span>
+                    <img src="../../assets/img/common/img_return.png" class="top-img">
+                    <div class="top-rtn" @click="goLogin">
+                        <span>返回</span>
                     </div>
                 </div>
                 <div class="top-right">
-                    <span class="top-title">注册</span>
+                    <span class="top-title">忘记密码</span>
                 </div>
             </div>
 
@@ -19,92 +19,59 @@
             <div class="mid-div">
                 <div>
                     <p class="mid-p">输入邮箱</p>
-                    <input type="email" name="userEmail" class="mid-input" @change="checkEmail()" v-model="email" >
+                    <input type="emial" name="userEmail" class="mid-input">
                 </div>
-                <div v-if="!show">
-                    <p class="mid-p">设置密码</p>
-                    <input type="password" name="password" class="mid-input" @change="checkPassword()" v-model="password">
-                    <span class="mid-tip">密码要求6-16位，至少包含数字、字母、符号两种元素</span>
+                <div @click="sendMessage">
+                    <p class="mid-p">验证码</p>
+                    <input type="text" name="checkCode" class="mid-input">
+                    <span v-if="isShow" class="mid-getCode">获取验证码</span>
+                    <span v-else class="mid-getCode">验证码已发送</span>
                 </div>
-
-                <div v-else>
-                    <p class="mid-p">设置密码</p>
-                    <input type="text" name="password" class="mid-input" @change="checkPassword()" v-model="password">
+                <div>
+                    <p class="mid-p" style="margin-top: -8px;">设置密码</p>
+                    <input type="password" name="password" class="mid-input">
                     <span class="mid-tip">密码要求6-16位，至少包含数字、字母、符号两种元素</span>
                 </div>
             </div>
 
             <!-- 下一步/上一步区域 -->
             <div class="bottom-div">
-                <button class="btn" @click="btnNext()">下一步</button>
+                <button class="btn">确认</button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-    import {userEmailIsExist} from "@/network/register.js"
     export default {
-        name: "RegisterFirst",
+        name: "Forget",
         data(){
             return{
-                email:this.$store.state.email,
-                password:this.$store.state.password,
-                isEmail:false,
-                isPassword:false,
-                EmailUnRegister:true,
-                show:false
+                isShow:true
             }
         },
         methods:{
-            btnNext(){
-                if (this.EmailUnRegister&&this.isEmail&&this.isPassword){
-                    this.$router.push({
-                        path:"/setDreamSchool"
-                    })
-                }else{
-                    alert("密码与邮箱都需按照要求填写");
-                }
+            goLogin(){
+                this.$router.push('/login');
             },
-            checkEmail(){
-                userEmailIsExist(this.email).then(res=>{
-                    console.log('res = ', res);
-                    if(res.statu==1){
-                        this.EmailUnRegister=true;
-                        this.$store.commit('setEmail',this.email);
-                        alert("邮箱可用");
-                    }else{
-                        alert("此账号已经被注册，请更换邮箱账号");
-                    }
-                })
-                let email = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
-                if (!email.test(this.email)) {
-                    //弹出警示框
-                    alert("不符合邮箱规范")
-                }else{
-                    this.isEmail=true;
-                }
-            },
-            checkPassword(){
-                let passwordreg = /(?!^[0-9]+$)(?!^[A-z]+$)(?!^[^A-z0-9]+$)^.{6,16}$/;
-                if(!passwordreg.test(this.password)){
-                    //弹出警示框
-                    alert("不符合密码要求")
-                }else {
-                    this.$store.commit('setPassword',this.password);
-                    this.isPassword=true;
-                    alert("密码可用")
-                }
-
-            },
-            returnLogin() {
-                this.$router.push('/login')
+            sendMessage(){
+                alert("验证码功能正在开发");
+                this.isShow=false;
             }
         }
     }
 </script>
 
 <style scoped>
+    body{
+        padding: 0px;
+        margin: 0px;
+    }
+    .all{
+        min-width: 100%;
+        min-height: 100%;
+        position: absolute;
+    }
     .register-div{
         width: 450px;
         height: 500px;
@@ -149,7 +116,6 @@
         font-size: 16px;
         font-weight: 400;
         color: #999999;
-        cursor: pointer;
     }
     .top-title{
         display: flex;
@@ -157,25 +123,29 @@
         line-height: 0px;
         font-weight: 400;
         font-size: 22px;
-        color: #000000;
     }
     .mid-div{
         align-items: center;
         width: 370px;
-        height: 240px;
+        height: 300px;
         margin: 0px auto;
         font-family: Microsoft YaHei;
     }
     .mid-p{
         font-size: 18px;
-        margin: 25px 0px 8px 0px;
-        color: #000000;
+        margin-bottom: 8px;
     }
     .mid-input{
         width: 100%;
         height: 2em;
         border: 2px solid #E4E8EB;
         border-radius: 8px;
+    }
+    .mid-getCode{
+        position: relative;
+        left: 270px;
+        bottom: 28px;
+        color: #2A74D6;
     }
     .mid-tip{
         font-size: 14px;
@@ -185,7 +155,7 @@
         align-items: center;
         justify-content: center;
         width: 374px;
-        height: 100px;
+        height: 50px;
         margin: 0px auto;
         position: relative;
         left: 2px;
@@ -203,4 +173,5 @@
     .btn:hover{
         opacity: 0.9;
     }
+
 </style>

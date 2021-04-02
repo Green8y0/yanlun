@@ -7,7 +7,7 @@
                 <!-- 用户信息 -->
                 <div class="top-userinfo">
                     <img :src="require('@/assets/img/common/'+userInfo.headPortrait+'.png')"
-                    class="top-headPortrait">
+                         class="top-headPortrait">
                     <!-- 用户名 -->
                     <div class="userinfo-name-div">
                         <span class="userinfo-name">{{userInfo.baseInfo.nickName}}</span>
@@ -60,63 +60,63 @@
                     <!-- end of 文章内容(无帖子) -->
 
                     <!-- 圈子行显示 -->
-	        		<div :class="index%2===0?'circle-line-div':'circle-line-div-reverse'"
-	        		v-for="(circle,index) in circles" :key="index" v-else>
-	        			<!-- 圈子介绍 -->
-	        			<div class="circle-line-left">
-	        				<!-- 校徽、圈名、创建时间、加入人数 -->
-	        				<div class="circle-title-div">
-	        					<div class="circle-title-left">
-		        					<img :src="require('@/assets/img/common/'+circle.circleHead+'.png')">
+                    <div :class="index%2===0?'circle-line-div':'circle-line-div-reverse'"
+                         v-for="(circle,index) in circles" :key="index" v-else>
+                        <!-- 圈子介绍 -->
+                        <div class="circle-line-left">
+                            <!-- 校徽、圈名、创建时间、加入人数 -->
+                            <div class="circle-title-div">
+                                <div class="circle-title-left">
+                                    <img :src="require('@/assets/img/common/'+circle.circleHead+'.png')">
 
-		        					<!-- title中部 -->
-		        					<div class="circle-title-font">
-		        						<span>{{circle.circleName}}</span>
-		        						<span>{{circle.createTime}}</span>
-		        					</div>
-	        					</div>
+                                    <!-- title中部 -->
+                                    <div class="circle-title-font">
+                                        <span>{{circle.circleName}}</span>
+                                        <span>{{circle.createTime}}</span>
+                                    </div>
+                                </div>
 
-	        					<div class="circle-title-official" v-show="circle.isOfficial">官方</div>
-	        					<div class="circle-title-members">{{circle.members/1000}}K</div>
-	        				</div>
+                                <div class="circle-title-official" v-show="circle.isOfficial">官方</div>
+                                <div class="circle-title-members">{{circle.members/1000}}K</div>
+                            </div>
 
-	        				<button class="circle-button-inactive">
-	        					退出圈子
-	        				</button>
-	        				<div>
+                            <button class="circle-button-inactive">
+                                退出圈子
+                            </button>
+                            <div>
 	        					<span class="seniors-span">
 	        						今日更新&nbsp;
 	        						<span class="seniors-name" v-if="circle.todayUpdata>=99">99 +</span>
 	        						<span class="seniors-name" v-else>{{circle.todayUpdata}}</span>
 	        						&nbsp;篇文章，快来看看吧
 	        					</span>
-	        				</div>
-	        			</div>
-	        			<!-- end of 圈子介绍 -->
+                            </div>
+                        </div>
+                        <!-- end of 圈子介绍 -->
 
-	        			<!-- 圈子图片 -->
-	        			<div class="circle-line-right" @click="goCircleDetail"
-	        			@mouseenter="changeshowMask(index)" @mouseleave="changeshowMask(index)">
-	        				<img :src="require('@/assets/img/common/'+circle.circleImg+'.png')">
+                        <!-- 圈子图片 -->
+                        <div class="circle-line-right" @click="goCircleDetail"
+                             @mouseenter="changeshowMask(index)" @mouseleave="changeshowMask(index)">
+                            <img :src="require('@/assets/img/common/'+circle.circleImg+'.png')">
 
-	        				<!-- 圈子遮罩层 -->
-	        				<div class="circle-img-mask" v-show="circle.showMask">
-	        					<!-- 圈子简介 -->
-	        					<span v-for="(row,index) in circle.introduction" :key="index">
+                            <!-- 圈子遮罩层 -->
+                            <div class="circle-img-mask" v-show="circle.showMask">
+                                <!-- 圈子简介 -->
+                                <span v-for="(row,index) in circle.introduction" :key="index">
 	        						{{row}}
 	        						<div class="more-details-div"
-		        						v-show="circle.introduction.length > 0 &&
+                                         v-show="circle.introduction.length > 0 &&
 		        						index === circle.introduction.length-1">
 		        						<span style="color: #50B1DB;">了解详情</span>
 		        						<img src="@/assets/img/common/more_icon2.png">
 		        					</div>
 	        					</span>
 
-	        				</div>
-	        			</div>
-	        			<!-- end of 圈子图片 -->
-	        		</div>
-	        		<!-- end of 圈子行显示 -->
+                            </div>
+                        </div>
+                        <!-- end of 圈子图片 -->
+                    </div>
+                    <!-- end of 圈子行显示 -->
                 </div>
                 <!-- end of 我的文章区域 -->
 
@@ -130,79 +130,9 @@
                         <div class="edit-top">
                             <button>点击认证</button>
                         </div>
-                        <div class="edit-mid">
-                            <div class="mid-font-div">
-                                <span class="mid-font">个人资料完成度 
-                                    <span class="complete-degree">{{completeDegree}}</span>
-                                </span>
-                            </div>
-                            <!-- 进度条 -->
-                            <div class="progress-bar"></div>
-                            <!-- end of 进度条 -->
 
-                            <div class="progress-bar-completed" :style="{width:completeDegree}"></div>
-
-                            <!-- 个人信息显示区域 -->
-                            <!-- 真实姓名显示 -->
-                            <div v-if="userInfo.baseInfo.realName.length>0"
-                            class="show-personalInfo-line" style="border: none;">
-                                <img src="@/assets/img/common/realName_icon.png" class="show-personalInfo-img">
-                                <span class="show-personalInfo-font">{{userInfo.baseInfo.realName}}</span>
-                            </div>
-
-                            <!-- 所在地显示 -->
-                            <div class="show-personalInfo-line" v-if="userInfo.baseInfo.location.length>0">
-                                <img src="@/assets/img/common/location_icon.png" class="show-personalInfo-img">
-                                <span class="show-personalInfo-font">{{userInfo.baseInfo.location}}</span>
-                            </div>
-
-                            <!-- 生日显示 -->
-                            <div class="show-personalInfo-line" v-if="userInfo.baseInfo.birthday.length>0">
-                                <img src="@/assets/img/common/birthday_icon.png" class="show-personalInfo-img">
-                                <span class="show-personalInfo-font">{{userInfo.baseInfo.birthday}}</span>
-                            </div>
-
-                            <!-- 本科院校显示 -->
-                            <div class="show-personalInfo-line"
-                            v-if="userInfo.baseInfo.underGraduateSchool.length>0">
-                                <img src="@/assets/img/common/underGraduateSchool_icon.png"
-                                class="show-personalInfo-img">
-                                <span class="show-personalInfo-font">
-                                    本科院校&nbsp;&nbsp;&nbsp;{{userInfo.baseInfo.underGraduateSchool}}
-                                </span>
-                            </div>
-
-                            <!-- 目标院校显示 -->
-                            <div class="show-personalInfo-line"
-                            v-if="userInfo.baseInfo.targetSchool.length>0">
-                                <img src="@/assets/img/common/targetSchool_icon.png"
-                                class="show-personalInfo-img">
-                                <span class="show-personalInfo-font">
-                                    目标院校&nbsp;&nbsp;&nbsp;{{userInfo.baseInfo.targetSchool}}
-                                </span>
-                            </div>
-
-                            <!-- 考研目标显示 -->
-                            <div class="show-personalInfo-line"
-                            v-if="userInfo.baseInfo.postGraduateGoal.length>0">
-                                <img src="@/assets/img/common/postGraduateGoal_icon.png"
-                                class="show-personalInfo-img" style="margin-left: 0px;">
-                                <span class="show-personalInfo-font">
-                                    考研目标&nbsp;&nbsp;&nbsp;{{userInfo.baseInfo.postGraduateGoal}}
-                                </span>
-                            </div>
-                            
-                            <!-- 简介显示 -->
-                            <div class="show-personalInfo-textarea"
-                            v-if="userInfo.baseInfo.introduction.length>0">
-                                <img src="@/assets/img/common/introduction_icon.png"
-                                class="show-personalInfo-img">
-                                <span class="show-personalInfo-font">
-                                    {{userInfo.baseInfo.introduction}}
-                                </span>
-                            </div>
-                            <!-- end of 个人信息显示区域 -->
-                        </div>
+                        <UserInfoCompleteDegree
+                                :userInfo="userInfo" :completeDegree="completeDegree"></UserInfoCompleteDegree>
                     </div>
 
                     <!-- 网站版权信息区域 -->
@@ -217,16 +147,18 @@
 </template>
 
 <script>
-	import {getUrlInfo} from '@/util.js'
+    import {getUrlInfo} from '@/util.js'
     import Copyright from '@/component/Copyright'
     import UserPageNav from '@/component/UserPageNav'
     import FocusList from '@/component/FocusList'
+    import UserInfoCompleteDegree from '@/component/UserInfoCompleteDegree'
     export default {
         name: "MyCircle",
         components: {
             Copyright,
             UserPageNav,
-            FocusList
+            FocusList,
+            UserInfoCompleteDegree
         },
         data(){
             return {
@@ -243,11 +175,11 @@
                     baseInfo: {
                         loginName: "",						// 登录名
                         nickName: "",						// 昵称
-                        realName: "",						// 真实姓名
+                        realName: "张三",						// 真实姓名
                         location: "",                       // 所在地
                         sex: "男",							// 性别
                         birthday: "",						// 生日
-                        targetSchool: "",					// 目标院校
+                        targetSchool: "华中科技大学",					// 目标院校
                         postGraduateGoal: "",			    // 考研目标(专硕/学硕)
                         registerTime: "2021-01-21",			// 注册时间
                         underGraduateSchool: "",			// 本科院校
@@ -262,11 +194,11 @@
                         headPortrait: "head_portrait1",
                         introduction: "一个努力上进、很好相处的学长！"
                     },
-                    {
-                        name: "怪兽小天",
-                        headPortrait: "head_portrait4",
-                        introduction: "一个喜欢交流的人，希望在这里找到志同..."
-                    }],
+                        {
+                            name: "怪兽小天",
+                            headPortrait: "head_portrait4",
+                            introduction: "一个喜欢交流的人，希望在这里找到志同..."
+                        }],
                     collectionNum: 1,						// 我的收藏
                     historyNum: 10,							// 浏览历史
                     attentionNum: 2,						// 我的关注
@@ -276,54 +208,54 @@
                     myFan: 0								// 我的粉丝
                 },
                 circles: [{
-                	circleName: "武汉大学研友圈",						// 圈名
-                	members: "10000",								// 加入人数
-                	seniors: ["林一凡","茂子凯"],						// 前辈真实姓名
-                	circleHead: "wuhan_university_logo",			// 学校logo
-                	circleImg: "wuhan_university_img1",				// 学校展示图片
-                	isOfficial: false,								// 官方标志
-                	isJoin: true,									// 是否加入
-                	showMask: false,								// 是否显示遮罩层
-                	todayUpdata: 78,								// 今日跟新帖子数
-                	introduction: [
-                		"我愿意做一只小狐狸",
-                		"守着我的山，守着我的树",
-                		"守着我的湖泊和城堡",
-                		"守着云起云落间，远行的少年"],					// 简介
-                	createTime: "2021/01/25"						// 创建时间
+                    circleName: "武汉大学研友圈",						// 圈名
+                    members: "10000",								// 加入人数
+                    seniors: ["林一凡","茂子凯"],						// 前辈真实姓名
+                    circleHead: "wuhan_university_logo",			// 学校logo
+                    circleImg: "wuhan_university_img1",				// 学校展示图片
+                    isOfficial: false,								// 官方标志
+                    isJoin: true,									// 是否加入
+                    showMask: false,								// 是否显示遮罩层
+                    todayUpdata: 78,								// 今日跟新帖子数
+                    introduction: [
+                        "我愿意做一只小狐狸",
+                        "守着我的山，守着我的树",
+                        "守着我的湖泊和城堡",
+                        "守着云起云落间，远行的少年"],					// 简介
+                    createTime: "2021/01/25"						// 创建时间
                 },
-                {
-                	circleName: "武汉大学",
-                	members: "22000",
-                	seniors: ["凯伊一","吴泽言"],
-                	circleHead: "wuhan_university_logo",
-                	circleImg: "wuhan_university_img2",
-                	isOfficial: true,
-                	isJoin: false,
-                	showMask: false,
-                	todayUpdata: 100,
-                	introduction: [],
-                	createTime: "2021/01/27"
-                },
-                {
-                	circleName: "清华大学",
-                	members: "26000",
-                	seniors: ["江楚楚","莫小晴"],
-                	circleHead: "qinghua_university_logo",
-                	circleImg: "qinghua_university_img",
-                	isOfficial: true,
-                	isJoin: false,
-                	showMask: false,
-                	todayUpdata: 98,
-                	introduction: [],
-                	createTime: "2021/01/21"
-                }]
+                    {
+                        circleName: "武汉大学",
+                        members: "22000",
+                        seniors: ["凯伊一","吴泽言"],
+                        circleHead: "wuhan_university_logo",
+                        circleImg: "wuhan_university_img2",
+                        isOfficial: true,
+                        isJoin: false,
+                        showMask: false,
+                        todayUpdata: 100,
+                        introduction: [],
+                        createTime: "2021/01/27"
+                    },
+                    {
+                        circleName: "清华大学",
+                        members: "26000",
+                        seniors: ["江楚楚","莫小晴"],
+                        circleHead: "qinghua_university_logo",
+                        circleImg: "qinghua_university_img",
+                        isOfficial: true,
+                        isJoin: false,
+                        showMask: false,
+                        todayUpdata: 98,
+                        introduction: [],
+                        createTime: "2021/01/21"
+                    }]
             }
         },
         methods:{
-        	changeshowMask(e) {
-        		this.circles[e].showMask = !this.circles[e].showMask
-        	},
+            changeshowMask(e) {
+                this.circles[e].showMask = !this.circles[e].showMask
+            },
             calculateCompleteDegree(){
                 // 计算基本信息填写完成度
                 // 注册时间不需要计入完成度
@@ -353,9 +285,9 @@
                 this.currentRouter = urlInfo.currentRouter
                 console.log('currentRouter=',this.currentRouter)
             },
-			goCircleDetail(){
-        		this.$router.push('/circledetail')
-			}
+            goCircleDetail(){
+                this.$router.push('/circledetail')
+            }
         },
         mounted(){
             // 暂时等于，userInfo的信息从后端传入，与后端连接上时，782行删除
@@ -542,163 +474,163 @@
         display: inline;
     }
     .circle-line-div{
-		width: 573px;
-		height: 138px;
-		margin: 22px auto;
-		border: 1px solid #EEEEEE;
-		border-radius: 6px;
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: center;
-	}
-	.circle-line-div-reverse{
-		width: 573px;
-		height: 138px;
-		margin: 22px auto;
-		border: 1px solid #EEEEEE;
-		border-radius: 6px;
-		display: flex;
-		flex-direction: row-reverse;
-		justify-content: flex-start;
-		align-items: center;
-	}
-	.circle-line-left{
-		width: 50%;
-		height: 100%;
-		background: #FFFFFF;
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-start;
-		align-items: center;
-	}
-	.circle-title-div{
-		width: 219px;
-		height: 35px;
-		margin: 15px auto;
-		display: flex;
-		flex-direction: row;
-		justify-content: space-between;
-		align-items: center;
-		font-size: 12px;
-		font-family: Microsoft YaHei;
-		font-weight: 400;
-		color: #000000;
-		line-height: 15px;
-	}
-	.circle-title-div img{
-		margin-right: 9px;
-	}
-	.circle-title-left{
-		display: flex;
-		flex-direction: row;
-		justify-content: flex-start;
-		align-items: center;
-	}
-	.circle-title-official{
-		width: 35px;
-		height: 26px;
-		background: #FFAA23;
-		border: 1px solid #FFAA23;
-		color: #FFFFFF;
-		font-size: 12px;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: center;
-	}
-	.circle-title-members{
-		width: 33px;
-		height: 26px;
-		border: 1px solid #DCDCDC;
-		font-size: 12px;
-		font-family: Microsoft YaHei;
-		font-weight: 400;
-		color: #676666;
-		background: #FFFFFF;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: center;
-		margin-left: 7px;
-	}
-	.circle-title-font{
-		width: 90px;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-	}
-	.circle-button-inactive{
-		width: 220px;
-		height: 30px;
-		margin-bottom: 10px;
-		background: #FFFFFF;
-		border: 2px solid #EEEEEE;
-		border-radius: 2px;
-		color: #676666;
-		font-size: 12px;
-		cursor: pointer;
-	}
-	.circle-button-inactive:hover{
-		width: 220px;
-		height: 30px;
-		margin-bottom: 10px;
-		background: #EEEEEE;
-		border: 2px solid #EEEEEE;
-		border-radius: 2px;
-		color: #000000;
-		font-size: 12px;
-	}
-	.seniors-name{
-		font-size: 10px;
-		color: #1296DB;
-	}
-	.seniors-span{
-		font-size: 10px;
-	}
-	.circle-line-right{
-    	width: 50%;
-    	height: 100%;
-    	cursor: pointer;
+        width: 573px;
+        height: 138px;
+        margin: 22px auto;
+        border: 1px solid #EEEEEE;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    .circle-line-div-reverse{
+        width: 573px;
+        height: 138px;
+        margin: 22px auto;
+        border: 1px solid #EEEEEE;
+        border-radius: 6px;
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    .circle-line-left{
+        width: 50%;
+        height: 100%;
+        background: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    .circle-title-div{
+        width: 219px;
+        height: 35px;
+        margin: 15px auto;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        color: #000000;
+        line-height: 15px;
+    }
+    .circle-title-div img{
+        margin-right: 9px;
+    }
+    .circle-title-left{
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+    }
+    .circle-title-official{
+        width: 35px;
+        height: 26px;
+        background: #FFAA23;
+        border: 1px solid #FFAA23;
+        color: #FFFFFF;
+        font-size: 12px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+    .circle-title-members{
+        width: 33px;
+        height: 26px;
+        border: 1px solid #DCDCDC;
+        font-size: 12px;
+        font-family: Microsoft YaHei;
+        font-weight: 400;
+        color: #676666;
+        background: #FFFFFF;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin-left: 7px;
+    }
+    .circle-title-font{
+        width: 90px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .circle-button-inactive{
+        width: 220px;
+        height: 30px;
+        margin-bottom: 10px;
+        background: #FFFFFF;
+        border: 2px solid #EEEEEE;
+        border-radius: 2px;
+        color: #676666;
+        font-size: 12px;
+        cursor: pointer;
+    }
+    .circle-button-inactive:hover{
+        width: 220px;
+        height: 30px;
+        margin-bottom: 10px;
+        background: #EEEEEE;
+        border: 2px solid #EEEEEE;
+        border-radius: 2px;
+        color: #000000;
+        font-size: 12px;
+    }
+    .seniors-name{
+        font-size: 10px;
+        color: #1296DB;
+    }
+    .seniors-span{
+        font-size: 10px;
+    }
+    .circle-line-right{
+        width: 50%;
+        height: 100%;
+        cursor: pointer;
     }
     .circle-img-mask{
-    	width: 97%;
-    	height: 100%;
-    	background: #353535;
-    	border: 1px solid #353535;
-    	opacity: 0.7;
-    	position: relative;
-    	bottom: 103%;
-    	font-size: 12px;
-    	color: #FFFFFF;
-    	line-height: 20px;
-    	display: flex;
-    	flex-direction: column;
-    	justify-content: center;
-    	align-items: flex-start;
-    	padding-left: 8px;
+        width: 97%;
+        height: 100%;
+        background: #353535;
+        border: 1px solid #353535;
+        opacity: 0.7;
+        position: relative;
+        bottom: 103%;
+        font-size: 12px;
+        color: #FFFFFF;
+        line-height: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding-left: 8px;
     }
     .circle-img-mask span{
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: flex-start;
-    	align-items: center;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
     }
     .more-details-div{
-    	margin-left: 5px;
-    	cursor: pointer;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: flex-start;
-    	align-items: flex-start;
+        margin-left: 5px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
     }
     .more-details-div img{
-    	width: 13px;
-    	height: 13px;
-    	margin-left: 4px;
-    	position: relative;
-    	top: 3px;
+        width: 13px;
+        height: 13px;
+        margin-left: 4px;
+        position: relative;
+        top: 3px;
     }
     .article-content{
         width: 571px;
@@ -880,8 +812,8 @@
         margin: 16px 0px 13px;
     }
     .post-a{
-    	font-size: 16px;
-    	color: #000000;
+        font-size: 16px;
+        color: #000000;
     }
     .post-content{
         display: flex;
