@@ -7,11 +7,11 @@
                     <span>主页</span>
                 </router-link>
             </div>
-            <div :class="currentRouter === 'collection'?'nav-link-div-active':'nav-link-div'">
-                <router-link to="collection" class="nav-link">
-                    <span>学长/学姐</span>
-                </router-link>
-            </div>
+<!--            <div :class="currentRouter === 'collection'?'nav-link-div-active':'nav-link-div'">-->
+<!--                <router-link to="collection" class="nav-link">-->
+<!--                    <span>学长/学姐</span>-->
+<!--                </router-link>-->
+<!--            </div>-->
         </div>
     </div>
     <!-- end of 链接 -->

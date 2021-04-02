@@ -29,8 +29,16 @@
     					<span class="english-name">{{schoolInfos.englishName}}</span>
     					<!-- 简介主体 -->
     					<div class="introduction-content">
-	    					<span v-for="(introduction,index) in schoolInfos.introductions" class="introduction">
-	    						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{introduction}}
+	    					<span class="introduction">
+	    						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{schoolInfos.summary}}
+	    					</span>
+							<br>
+							<span class="introduction">
+	    						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{schoolInfos.history}}
+	    					</span>
+							<br>
+							<span class="introduction">
+	    						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{schoolInfos.achieve}}
 	    					</span>
     					</div>
 
@@ -46,7 +54,7 @@
     								<span class="others-item-th">知名校友</span>
     								<span class="others-item-td">
     									<span style="color: #1296DB;">
-    										{{schoolInfos.famousAlumni[0] + "、" + schoolInfos.famousAlumni[1]}}
+    										{{schoolInfos.famousAlumni}}
     									</span>
     									等
     								</span>
@@ -125,9 +133,9 @@
     				</div>
     				<!-- end of 左侧简介专业信息区域 -->
 
-    				<div class="introduction-right">
-    					<img :src="require('@/assets/img/common/'+schoolInfos.schoolLogo+'.png')">
-    				</div>
+<!--    				<div class="introduction-right">-->
+<!--    					<img :src="require('@/assets/img/common/'+'scuec_university_logo'+'.png')">-->
+<!--    				</div>-->
     			</div>
     			<!-- end of 学校简介区域 -->
     		</div>
@@ -137,6 +145,7 @@
 
 <script>
 	import {getUrlInfo} from '@/util.js'
+	import {getSchoolInfo} from '@/network/schools'
     export default {
         name: "ShchoolInfo",
         data() {
@@ -151,11 +160,9 @@
         			officialWebsite: "https://www.scuec.edu.cn",				// 学校官网
         			masterOfficialWebsite: "http://www.scuec.edu.cn/yjsy/",		// 研究生官网
         			schoolLogo: "scuec_university_logo",
-        			introductions: [// 简介
-        				"中南民族大学（South-Central Minzu University），简称中南民大（SCMZU），位于湖北省武汉市，是中华人民共和国国家民族事务委员会直属高校，为中国“少数民族骨干计划”资格高校、全国深化创新创业教育改革示范高校、中国高校行星科学联盟、湖北省“国内一流大学建设高校”，是中华人民共和国国家民族事务委员会、教育部、中国科学院、湖北省人民政府、武汉市五方共建高校。",
-        				"学校前身为中南民族学院，始建于1951年，创建之初名为中央民族学院中南分院；1952年11月，经中南军政委员会批准，将中央民族学院中南分院改名为中南民族学院；1985年，学校招收首批硕士研究生；2002年3月，学校正式更名为中南民族大学；2006年，学校正式获得博士学位授予权；2010年，学校首次实现拥有56个民族学生的目标。",
-        				"截至2018年11月，学校占地1550余亩，校舍面积100万余平米，馆藏图书697余万册；拥有56个民族的全日制博士、硕士、本科、预科等各类学生27000余人，有教师1392人；设有21个二级学院、84个本科专业；有2个一级学科博士学位授权点、1个博士后科研流动站、士后科研流动站、24个学术型一级学科硕士学位授权点，16个专业型硕士学位授权点。"
-        			],
+        			achieve:'',
+					summary:'',
+					history:'',
         			colleges: [{
         				collegeId: "001",
         				collegeName: "法学院",
@@ -210,12 +217,25 @@
         		}
         	}
         },
+		created(){
+        	console.log(111)
+			this.getSchoolInfo();
+		},
         methods: {
         	checkCurrentRouter(){
                 let urlInfo = getUrlInfo()
                 this.currentRouter = urlInfo.currentRouter
                 console.log('currentRouter=',this.currentRouter)
-            }
+            },
+			getSchoolInfo(){
+				getSchoolInfo(this.$store.state.clickSchool).then(res=>{
+					this.schoolInfos=res.schoolInfos;
+					console.log(res.schoolInfos);
+					console.log(res.schoolName);
+					console.log(this.schoolInfos.schoolName)
+					console.log(res.introductions)
+				})
+			}
         },
         mounted(){
             // 设置当前页面的CSS

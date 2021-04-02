@@ -133,9 +133,6 @@
 	        				:class="currentRouter === 'circle'?'school-cirle-link-active':'school-cirle-link'">
 	        					<span>最新推荐</span>
 	        				</router-link>
-	        				<router-link to="circle" class="school-cirle-link">
-	        					<span>七日热门</span>
-	        				</router-link>
 	        			</div>
 	        			<!-- end of 最新推荐、七日热门nav区域 -->
 
@@ -169,7 +166,7 @@
 	        					<!-- 校徽、圈名、创建时间、加入人数 -->
 	        					<div class="circle-title-div">
 	        						<div class="circle-title-left">
-		        						<img :src="require('@/assets/img/common/'+circle.circleHead+'.png')">
+		        						<img :src="this.imgBaseUrl+circle.circleHead">
 
 		        						<!-- title中部 -->
 		        						<div class="circle-title-font">
@@ -182,8 +179,9 @@
 	        						<div class="circle-title-members">{{circle.members/1000}}K</div>
 	        					</div>
 
-	        					<button v-if="circle.isJoin" class="circle-button-inactive">退出圈子</button>
-                                <button class="circle-button-inactive" v-else>加入圈子</button>
+	        					<button :class="circle.isJoin?'circle-button-active':'circle-button-inactive'" @click="goCircleDetail">
+	        						加入圈子
+	        					</button>
 	        					<div>
 	        						<span class="seniors-name">{{circle.seniors[0]}}、{{circle.seniors[1]}}</span>
 	        						<span class="seniors-span">等优秀学长学姐等你加入</span>
@@ -192,9 +190,9 @@
 	        				<!-- end of 圈子介绍 -->
 
 	        				<!-- 圈子图片 -->
-	        				<div class="circle-line-right" @click="goCircleDetail"
+	        				<div class="circle-line-right" @click="goCircleDetail(circle)"
 	        				@mouseenter="changeshowMask(index)" @mouseleave="changeshowMask(index)">
-	        					<img :src="require('@/assets/img/common/'+circle.circleImg+'.png')">
+	        					<img :src="this.imgBaseUrl+circle.circleImg">
 
 	        					<!-- 圈子遮罩层 -->
 	        					<div class="circle-img-mask" v-show="circle.showMask">
@@ -217,7 +215,7 @@
 
 	        			<!-- 翻页按钮区域 -->
 	        			<div class="circle-page-div">
-	        				<button>下一页</button>
+	        				<button @click="nextPage">下一页</button>
 	        			</div>
 	        			<!-- end of 翻页按钮区域 -->
 	        		</div>
@@ -228,11 +226,55 @@
         	<!-- 右侧内容区域 -->
     		<div class="right">
     			<!-- 导航栏区域 -->
-    			<UserOptionsNav :userInfo="userInfo"></UserOptionsNav>
+    			<div class="right-nav">
+    				<!-- 我的收藏 -->
+    				<div class="nav-line" @click="goCollection">
+    					<img src="@/assets/img/common/collection_icon.png" class="collection-icon">
+    					<span class="line-title">我的收藏</span>
+    					<div class="line-num">
+    						<span>{{userInfo.collectionNum}}</span>
+    					</div>
+    				</div>
+    				<!-- 浏览历史 -->
+    				<div class="nav-line">
+    					<img src="@/assets/img/common/history_icon.png" class="collection-icon">
+    					<span class="line-title">浏览历史</span>
+    					<div class="line-num">
+    						<span>{{userInfo.historyNum}}</span>
+    					</div>
+    				</div>
+    				<!-- 我的关注 -->
+    				<div class="nav-line">
+    					<img src="@/assets/img/common/attention_icon.png" class="collection-icon">
+    					<span class="line-title">我的关注</span>
+    					<div class="line-num">
+    						<span>{{userInfo.attentionNum}}</span>
+    					</div>
+    				</div>
+    				<!-- 我的圈子 -->
+    				<div class="nav-line" @click="goCircle">
+    					<img src="@/assets/img/common/circle_icon.png" class="collection-icon">
+    					<span class="line-title">我的圈子</span>
+    					<div class="line-num">
+    						<span>{{userInfo.circleNum}}</span>
+    					</div>
+    				</div>
+    			</div>
     			<!-- end of 右侧导航栏区域 -->
 
     			<!-- 轮播图区域 -->
-    			<Carousel></Carousel>
+    			<div class="right-carousel">
+    				<transition-group name="image" tag="ul" class="carousel-img">
+    					<li v-for="(list, index) in carouselImgSrc" :key="index" v-show="index===currentIndex"
+    					@mouseenter="stop" @mouseleave="move">
+		    				<img :src="require('@/assets/img/common/'+list+'.png')">
+    					</li>
+    				</transition-group>
+    				<div class="carousel-btn-div">
+    					<span v-for="(list, index) in carouselImgSrc.length" :key="index"
+    					:class="{'active':index===currentIndex}" @mouseover="change(index)"></span>
+    				</div>
+    			</div>
     			<!-- end of 右侧轮播图区域 -->
 
     			<!-- 帖子区域 -->
@@ -273,18 +315,23 @@
 
 <script>
     import {getUrlInfo} from '@/util.js'
+	import {getCircle} from '@/network/circle.js'
     import Copyright from '@/component/Copyright'
-    import Carousel from '@/component/Carousel'
-    import UserOptionsNav from '@/component/UserOptionsNav'
     export default {
         name: "Circle",
         components: {
-            Copyright,
-            Carousel,
-            UserOptionsNav
+            Copyright
         },
         data(){
         	return {
+        		// 后台获取的网站信息
+        		websiteInfo: {
+        			tel: '123456789',			// 网站联系电话
+        			email: '123456789@qq.com'	// 网站联系邮箱
+        		},
+				start:0,
+				length:10,
+				imgBaseUrl:'http://47.96.234.106:8080/images/school/',
         		// 后台获取的用户数据
         		userInfo: {
         			collectionNum: 1,			// 我的收藏
@@ -295,6 +342,9 @@
         			draftNum: 0,				// 草稿箱
         			myFan: 0					// 我的粉丝
         		},
+        		carouselImgSrc: ['carousel1','carousel2','carousel3','carousel4','carousel5'],
+        		currentIndex: 0,
+        		timer: '',
                 currentRouter: null,			// 当前路由
                 showProvinceArea: false,		// 省份筛选区域显示标志
                 showCityArea: false,			// 城市筛选区域显示标志
@@ -477,98 +527,34 @@
                 	id: 33,
                 	province: "浙江",
                 	city :[]
-                }],
-                circles: [{
-                	circleName: "武汉大学研友圈",						// 圈名
-                	members: "10000",								// 加入人数
-                	seniors: ["林一凡","茂子凯"],						// 前辈真实姓名
-                	circleHead: "wuhan_university_logo",			// 学校logo
-                	circleImg: "wuhan_university_img1",				// 学校展示图片
-                	isOfficial: false,								// 官方标志
-                	isJoin: true,									// 是否加入
-                	showMask: false,								// 是否显示遮罩层
-                	introduction: ["我愿意做一只小狐狸",
-                		"守着我的山，守着我的树",
-                		"守着我的湖泊和城堡",
-                		"守着云起云落间，远行的少年"],					// 简介
-                	createTime: "2021/01/25"						// 创建时间
-                },
-                {
-                	circleName: "武汉大学",
-                	members: "22000",
-                	seniors: ["凯伊一","吴泽言"],
-                	circleHead: "wuhan_university_logo",
-                	circleImg: "wuhan_university_img2",
-                	isOfficial: true,
-                	isJoin: false,
-                	showMask: false,
-                	introduction: [],
-                	createTime: "2021/01/27"
-                },
-                {
-                	circleName: "清华大学",
-                	members: "26000",
-                	seniors: ["江楚楚","莫小晴"],
-                	circleHead: "qinghua_university_logo",
-                	circleImg: "qinghua_university_img",
-                	isOfficial: true,
-                	isJoin: false,
-                	showMask: false,
-                	introduction: [],
-                	createTime: "2021/01/21"
-                },
-                {
-                	circleName: "北京大学",
-                	members: "25000",
-                	seniors: ["江楚楚","莫小晴"],
-                	circleHead: "beijing_university_logo",
-                	circleImg: "beijing_university_img",
-                	isOfficial: true,
-                	isJoin: false,
-                	showMask: false,
-                	introduction: [],
-                	createTime: "2021/01/18"
-                },
-                {
-                	circleName: "复旦大学",
-                	members: "18000",
-                	seniors: ["林询","番茄"],
-                	circleHead: "fudan_university_logo",
-                	circleImg: "fudan_university_img",
-                	isOfficial: true,
-                	isJoin: false,
-                	showMask: false,
-                	introduction: [],
-                	createTime: "2021/01/20"
-                },
-                {
-                	circleName: "浙江大学",
-                	members: "17000",
-                	seniors: ["韩浅","李子艺"],
-                	circleHead: "zhejiang_university_logo",
-                	circleImg: "zhejiang_university_img",
-                	isOfficial: true,
-                	isJoin: false,
-                	showMask: false,
-                	introduction: [],
-                	createTime: "2021/01/18"
-                },
-                {
-                	circleName: "上海交通大学",
-                	members: "18000",
-                	seniors: ["夏天","凝寒"],
-                	circleHead: "shangjiao_university_logo",
-                	circleImg: "shangjiao_university_img",
-                	isOfficial: true,
-                	isJoin: false,
-                	showMask: false,
-                	introduction: [],
-                	createTime: "2021/01/24"
-                }],
+                },],
+                circles:[] ,
                 cities: []
         	}
         },
         methods:{
+        	autoPlay() {
+        		this.currentIndex++;
+        		if (this.currentIndex > this.carouselImgSrc.length - 1) {
+        			// 遍历到最后一张图片时置零
+        			this.currentIndex = 0
+        		}
+        	},
+        	move() {
+        		console.log('轮播图继续')
+        		// console.log(this.posts[0].postImg)
+        		this.timer = setInterval(() => {
+        			this.autoPlay()
+        		},2000)
+        	},
+        	stop(){
+        		console.log('轮播图暂停')
+	        	clearInterval(this.timer)
+	        	this.timer = null
+        	},
+        	change(index){
+        		this.currentIndex = index
+        	},
         	changeshowMask(e) {
         		this.circles[e].showMask = !this.circles[e].showMask
         	},
@@ -583,7 +569,12 @@
 			goCircle(){
 				this.$router.push("/circle");
 			},
-			goCircleDetail(){
+			goCircleDetail(circle){
+        		console.log(circle);
+        		this.$store.commit("setClickSchool",circle.circleName);
+				this.$store.commit("setClickSchoolImg",circle.circleImg);
+				this.$store.commit("setClickSchoolIntroduce",circle.introduction[0]);
+				this.$store.commit("setClickCircleId",circle.id);
         		this.$router.push('/circledetail')
 			},
 			searchCircle() {
@@ -633,523 +624,595 @@
 				this.searchCity = null
 				// 重新筛选
 				this.searchCircle()
+			},
+			getCircle(){
+				getCircle(this.$store.state.myEmail,this.start,this.length).then(res=>{
+					this.circles=res.circles;
+					console.log(this.circles)
+				})
+			},
+			nextPage(){
+        		this.start=this.start+1;
+        		this.getCircle();
 			}
         },
         mounted(){
             // 设置当前页面的CSS
             this.checkCurrentRouter()
-            console.log("省份数目=",this.areas.length)
+            console.log("省份数目=",this.areas.length),
+					this.getCircle();
+        },
+        created() {
+        	this.$nextTick(() => {
+        		// 设置定时器，每隔2s this.currentIndex+1
+	           	this.timer = setInterval(() => {
+	            	this.autoPlay()
+	           	}, 2000)
+        	})
         }
     }
 </script>
 
 <style scoped>
-    .all{
-    	min-height: 100%;
-    	min-width: 100%;
-    	position: absolute;
-    	background: #F9F9F9;
-    }
-    .container{
-    	width: 1103px;
-    	/*height: 1911.11px;*/
-    	margin: 16px auto;
-    	display: flex;					/*弹性盒子布局*/
-    }
-    .left{
-    	width: 659.9px;
-    	/*max-height: 100%;*/
-    }
-    .left-top-div{
-    	width: 100%;
-    	height: 235px;
-    	background: #FFFFFF;
-    }
-    .left-top{
-    	width: 584px;
-    	margin: 0px auto;
-    }
-    .left-nav{
-    	width: 100%;
-    	height: 59px;
-    	border-bottom: 2px solid #EEEEEE;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: flex-start;
-    	align-items: center;
-    }
-    .left-a-active{
-    	width: 62px;
-    	height: 31px;
-    	background: #4497F2;
-    	border-radius: 10px;
-    	margin-right: 30px;
-    	display: flex;							/*弹性盒子布局*/
-    	align-items: center;					/*盒子内容物纵轴居中*/
-    	justify-content: center;				/*盒子内容物横轴居中*/
-    }
-    .left-a-inactive{
-    	width: 62px;
-    	height: 31px;
-    	border-radius: 10px;
-    	color: #676666;
-    	margin-right: 20px;
-    	display: flex;							/*弹性盒子布局*/
-    	align-items: center;					/*盒子内容物纵轴居中*/
-    	justify-content: center;				/*盒子内容物横轴居中*/
-    }
-    .left-a-active a{
-    	color: #FFFFFF;
-    	font-size: 16px;
-    }
-    .left-a-inactive a{
-    	background: #FFFFFF;
-    	font-size: 16px;
-    }
-    .search-div{
-    	width: 100%;
-    	height: 85px;
-    	display: flex;							/*弹性盒子布局*/
-    	align-items: center;					/*盒子内容物纵轴居中*/
-    	justify-content: flex-start;			/*盒子内容物横轴左对齐*/
-    	border-bottom: 2px solid #EEEEEE;
-    	position: relative;
-    }
-    .search-div span{
-    	margin-right: 10px;
-    }
-    .search-div input{
-    	width: 220px;
-    	height: 41px;
-    	border: 1px solid #CCCCCC;
-    	border-radius: 2px;
-    	font-size: 14px;
-    	font-family: Microsoft YaHei;
-    	font-weight: 400;
-    	color: #8B8B8B;
-    	padding-left: 11px;
-    }
-    .search-div button{
-    	background: #FFFFFF;
-    	color: #4497F2;
-    	border: none;
-    	font-size: 14px;
-    	cursor: pointer;
-    	position: relative;
-    	right: 52px;
-    }
-    .area-selection{
-    	width: 150px;
-    	height: 41px;
-    	border: 1px solid #CCCCCC;
-    	border-radius: 4px;
-    	margin-right: 20px;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: flex-start;
-    	align-items: center;
-    	padding-left: 12px;
-    	font-size: 14px;
-    	color: #8B8B8B;
-    	cursor: pointer;
-    }
-    .area-selection img{
-    	width: 8px;
-    	height: 6px;
-    	margin-left: 92px;
-    }
-    .area-option{
-    	min-width: 264px;
-    	min-height: 100px;
-    	max-height: 376px;
-    	background: #FFFFFF;
-    	border: 1px solid #DCDCDC;
-    	border-radius: 4px;
-    	z-index: 10;
-    	position: absolute;						/*父级相对定位,子元素绝对定位,清除子元素空白*/
-    	top: 63px;
-    	left: 118px;
-    	display: flex;
-    	flex-direction: column;
-    	justify-content: flex-start;
-    }
-    .area-option span{
-    	width: 32px;
-    	height: 50px;
-    	font-size: 16px;
-    	color: #676666;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: flex-start;
-    	align-items: center;
-    	margin-left: 15px;
-    }
-    .city-option{
-    	min-width: 264px;
-    	max-width: 375px;
-    	min-height: 100px;
-    	max-height: 376px;
-    	background: #FFFFFF;
-    	border: 1px solid #DCDCDC;
-    	border-radius: 4px;
-    	z-index: 10;
-    	position: absolute;						/*父级相对定位,子元素绝对定位,清除子元素空白*/
-    	top: 63px;
-    	left: 302px;
-    	display: flex;
-    	flex-direction: column;
-    	justify-content: flex-start;
-    }
-    .city-option span{
-    	width: 32px;
-    	height: 50px;
-    	font-size: 16px;
-    	color: #676666;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: flex-start;
-    	align-items: center;
-    	margin-left: 15px;
-    }
-    .provinces-list{
-    	width: 100%;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: flex-start;
-    	align-items: flex-start;
-    }
-    .provinces-list-ul{
-    	width: 40px;
-    	margin-right: 40px;
-    }
-    .provinces-list-ul li{
-    	width: 40px;
-    	height: 20px;
-    	margin-bottom: 5px;
-    	font-size: 12px;
-    	color: #676666;
-    	cursor: pointer;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: center;
-    	align-items: center;
-    }
-    .provinces-list-ul li:hover{
-    	background: #4497F2;
-    	color: #FFFFFF;
-    	border-radius: 10px;
-    }
-    .left-bottom-div{
-    	width: 100%;
-    	/*height: 660px;*/
-    	margin-top: 16px;
-    	background: #FFFFFF;
-    }
-    .left-bottom{
-    	width: 584px;
-    	margin: 0px auto;
-    }
-    .left-bottom-nav{
-    	width: 100%;
-    	height: 48px;
-    	border-bottom: 2px solid #EEEEEE;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: center;
-    	align-items: center;
-    	margin-bottom: 23px;
-    }
-    .school-cirle-link{
-    	width: 56px;
-    	height: 100%;
-    	font-size: 14px;
-    	font-weight: 400;
-    	color: #676666;
-    	font-family: Microsoft YaHei;
-    	margin: 0px 20px 0px 20px;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: center;
-    	align-items: center;
-    }
-    .school-cirle-link-active{
-    	width: 56px;
-    	height: 100%;
-    	font-size: 14px;
-    	font-weight: 400;
-    	color: #50B1DB;
-    	font-family: Microsoft YaHei;
-    	margin: 0px 20px 0px 20px;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: center;
-    	align-items: center;
-    	border-bottom: 3px solid #4497F2;
-    }
-    .search-nav-font{
-    	min-width: 240px;
-    	font-size: 14px;
-    	color: #676666;
-    	text-align: center;
-    }
-    .search-nav-keywords{
-    	color: #50B1DB;
-    }
-    .rescreen-div{
-    	width: 77px;
-    	height: 26px;
-    	background: #FFFFFF;
-    	border: 1px solid #DCDCDC;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: center;
-    	align-items: center;
-    	margin-left: 97px;
-    	cursor: pointer;
-    }
-    .rescreen-div img{
-    	margin-right: 6px;
-    }
-    .rescreen-div span{
-    	font-size: 12px;
-    	position: relative;
-    	top: 1px;
-    }
-    .circle-line-div{
-    	width: 573px;
-    	height: 138px;
-    	margin: 22px auto;
-    	border: 1px solid #EEEEEE;
-    	border-radius: 6px;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: flex-start;
-    	align-items: center;
-    }
-    .circle-line-div-reverse{
-    	width: 573px;
-    	height: 138px;
-    	margin: 22px auto;
-    	border: 1px solid #EEEEEE;
-    	border-radius: 6px;
-    	display: flex;
-    	flex-direction: row-reverse;
-    	justify-content: flex-start;
-    	align-items: center;
-    }
-    .circle-line-left{
-    	width: 50%;
-    	height: 100%;
-    	background: #FFFFFF;
-    	display: flex;
-    	flex-direction: column;
-    	justify-content: flex-start;
-    	align-items: center;
-    }
-    .circle-title-div{
-    	width: 219px;
-    	height: 35px;
-    	margin: 15px auto;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: space-between;
-    	align-items: center;
-    	font-size: 12px;
-    	font-family: Microsoft YaHei;
-    	font-weight: 400;
-    	color: #000000;
-    	line-height: 15px;
-    }
-    .circle-title-div img{
-    	margin-right: 9px;
-    }
-    .circle-title-left{
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: flex-start;
-    	align-items: center;
-    }
-    .circle-title-official{
-    	width: 35px;
-    	height: 26px;
-    	background: #FFAA23;
-    	border: 1px solid #FFAA23;
-    	color: #FFFFFF;
-    	font-size: 12px;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: center;
-    	align-items: center;
-    }
-    .circle-title-members{
-    	width: 33px;
-    	height: 26px;
-    	border: 1px solid #DCDCDC;
-    	font-size: 12px;
-    	font-family: Microsoft YaHei;
-    	font-weight: 400;
-    	color: #676666;
-    	background: #FFFFFF;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: center;
-    	align-items: center;
-    	margin-left: 7px;
-    }
-    .circle-title-font{
-    	width: 90px;
-    	height: 100%;
-    	display: flex;
-    	flex-direction: column;
-    	justify-content: center;
-    }
-    .circle-button-inactive{
-    	width: 220px;
-    	height: 30px;
-    	margin-bottom: 10px;
-    	background: #FFFFFF;
-    	border: 2px solid #EEEEEE;
-    	border-radius: 2px;
-    	color: #676666;
-    	font-size: 12px;
-    	cursor: pointer;
-    }
-    .circle-button-inactive:hover{
-    	background: #EEEEEE;
-    	border: 2px solid #EEEEEE;
-    	color: #000000;
-    }
-    .seniors-name{
-    	font-size: 10px;
-    	color: #1296DB;
-    }
-    .seniors-span{
-    	font-size: 10px;
-    }
-    .circle-line-right{
-    	width: 50%;
-    	height: 100%;
-        cursor: pointer;
-    }
-    .circle-img-mask{
-    	width: 97%;
-    	height: 100%;
-    	background: #353535;
-    	border: 1px solid #353535;
-    	opacity: 0.7;
-    	position: relative;
-    	bottom: 103%;
-    	font-size: 12px;
-    	color: #FFFFFF;
-    	line-height: 20px;
-    	display: flex;
-    	flex-direction: column;
-    	justify-content: center;
-    	align-items: flex-start;
-    	padding-left: 8px;
-    }
-    .circle-img-mask span{
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: flex-start;
-    	align-items: center;
-    }
-    .more-details-div{
-    	margin-left: 5px;
-    	cursor: pointer;
-    	display: flex;
-    	flex-direction: row;
-    	justify-content: flex-start;
-    	align-items: flex-start;
-    }
-    .more-details-div img{
-    	width: 13px;
-    	height: 13px;
-    	margin-left: 4px;
-    	position: relative;
-    	top: 3px;
-    }
-    .circle-page-div{
-    	width: 584px;
-    	height: 72px;
-    	border-top: 2px solid #EEEEEE;
-    	margin-top: 22px;
-    	display: flex;
-    	justify-content: center;
-    	align-items: center;
-    }
-    .circle-page-div button{
-    	width: 210px;
-    	height: 30px;
-    	background: #EEEEEE;
-    	border: 1px solid #EEEEEE;
-    	border-radius: 2px;
-    	color: #8A8A8A;
-    	font-size: 14px;
-    	cursor: pointer;
-    }
+.all{
+	min-height: 100%;
+	min-width: 100%;
+	position: absolute;
+	background: #F9F9F9;
+}
+.container{
+	width: 1103px;
+	/*height: 1911.11px;*/
+	margin: 16px auto;
+	display: flex;					/*弹性盒子布局*/
+}
+.left{
+	width: 659.9px;
+	/*max-height: 100%;*/
+}
+.left-top-div{
+	width: 100%;
+	height: 235px;
+	background: #FFFFFF;
+}
+.left-top{
+	width: 584px;
+	margin: 0px auto;
+}
+.left-nav{
+	width: 100%;
+	height: 59px;
+	border-bottom: 2px solid #EEEEEE;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+}
+.left-a-active{
+	width: 62px;
+	height: 31px;
+	background: #4497F2;
+	border-radius: 10px;
+	margin-right: 30px;
+	display: flex;							/*弹性盒子布局*/
+	align-items: center;					/*盒子内容物纵轴居中*/
+	justify-content: center;				/*盒子内容物横轴居中*/
+}
+.left-a-inactive{
+	width: 62px;
+	height: 31px;
+	border-radius: 10px;
+	color: #676666;
+	margin-right: 20px;
+	display: flex;							/*弹性盒子布局*/
+	align-items: center;					/*盒子内容物纵轴居中*/
+	justify-content: center;				/*盒子内容物横轴居中*/
+}
+.left-a-active a{
+	color: #FFFFFF;
+	font-size: 16px;
+}
+.left-a-inactive a{
+	background: #FFFFFF;
+	font-size: 16px;
+}
+.search-div{
+	width: 100%;
+	height: 85px;
+	display: flex;							/*弹性盒子布局*/
+	align-items: center;					/*盒子内容物纵轴居中*/
+	justify-content: flex-start;			/*盒子内容物横轴左对齐*/
+	border-bottom: 2px solid #EEEEEE;
+	position: relative;
+}
+.search-div span{
+	margin-right: 10px;
+}
+.search-div input{
+	width: 220px;
+	height: 41px;
+	border: 1px solid #CCCCCC;
+	border-radius: 2px;
+	font-size: 14px;
+	font-family: Microsoft YaHei;
+	font-weight: 400;
+	color: #8B8B8B;
+	padding-left: 11px;
+}
+.search-div button{
+	background: #FFFFFF;
+	color: #4497F2;
+	border: none;
+	font-size: 14px;
+	cursor: pointer;
+	position: relative;
+	right: 52px;
+}
+.area-selection{
+	width: 150px;
+	height: 41px;
+	border: 1px solid #CCCCCC;
+	border-radius: 4px;
+	margin-right: 20px;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	padding-left: 12px;
+	font-size: 14px;
+	color: #8B8B8B;
+	cursor: pointer;
+}
+.area-selection img{
+	width: 8px;
+	height: 6px;
+	margin-left: 92px;
+}
+.area-option{
+	min-width: 264px;
+	min-height: 100px;
+	max-height: 376px;
+	background: #FFFFFF;
+	border: 1px solid #DCDCDC;
+	border-radius: 4px;
+	z-index: 10;
+	position: absolute;						/*父级相对定位,子元素绝对定位,清除子元素空白*/
+	top: 63px;
+	left: 118px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+.area-option span{
+	width: 32px;
+	height: 50px;
+	font-size: 16px;
+	color: #676666;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	margin-left: 15px;
+}
+.city-option{
+	min-width: 264px;
+	max-width: 375px;
+	min-height: 100px;
+	max-height: 376px;
+	background: #FFFFFF;
+	border: 1px solid #DCDCDC;
+	border-radius: 4px;
+	z-index: 10;
+	position: absolute;						/*父级相对定位,子元素绝对定位,清除子元素空白*/
+	top: 63px;
+	left: 302px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+.city-option span{
+	width: 32px;
+	height: 50px;
+	font-size: 16px;
+	color: #676666;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	margin-left: 15px;
+}
+.provinces-list{
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+.provinces-list-ul{
+	width: 40px;
+	margin-right: 40px;
+}
+.provinces-list-ul li{
+	width: 40px;
+	height: 20px;
+	margin-bottom: 5px;
+	font-size: 12px;
+	color: #676666;
+	cursor: pointer;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+.provinces-list-ul li:hover{
+	background: #4497F2;
+	color: #FFFFFF;
+	border-radius: 10px;
+}
+.left-bottom-div{
+	width: 100%;
+	/*height: 660px;*/
+	margin-top: 16px;
+	background: #FFFFFF;
+}
+.left-bottom{
+	width: 584px;
+	margin: 0px auto;
+}
+.left-bottom-nav{
+	width: 100%;
+	height: 48px;
+	border-bottom: 2px solid #EEEEEE;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	margin-bottom: 23px;
+}
+.school-cirle-link{
+	width: 56px;
+	height: 100%;
+	font-size: 14px;
+	font-weight: 400;
+	color: #676666;
+	font-family: Microsoft YaHei;
+	margin: 0px 20px 0px 20px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+.school-cirle-link-active{
+	width: 56px;
+	height: 100%;
+	font-size: 14px;
+	font-weight: 400;
+	color: #50B1DB;
+	font-family: Microsoft YaHei;
+	margin: 0px 20px 0px 20px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	border-bottom: 3px solid #4497F2;
+}
+.search-nav-font{
+	min-width: 240px;
+	font-size: 14px;
+	color: #676666;
+	text-align: center;
+}
+.search-nav-keywords{
+	color: #50B1DB;
+}
+.rescreen-div{
+	width: 77px;
+	height: 26px;
+	background: #FFFFFF;
+	border: 1px solid #DCDCDC;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	margin-left: 97px;
+	cursor: pointer;
+}
+.rescreen-div img{
+	margin-right: 6px;
+}
+.rescreen-div span{
+	font-size: 12px;
+	position: relative;
+	top: 1px;
+}
+.circle-line-div{
+	width: 573px;
+	height: 138px;
+	margin: 22px auto;
+	border: 1px solid #EEEEEE;
+	border-radius: 6px;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+}
+.circle-line-div-reverse{
+	width: 573px;
+	height: 138px;
+	margin: 22px auto;
+	border: 1px solid #EEEEEE;
+	border-radius: 6px;
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: flex-start;
+	align-items: center;
+}
+.circle-line-left{
+	width: 50%;
+	height: 100%;
+	background: #FFFFFF;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}
+.circle-title-div{
+	width: 219px;
+	height: 35px;
+	margin: 15px auto;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 12px;
+	font-family: Microsoft YaHei;
+	font-weight: 400;
+	color: #000000;
+	line-height: 15px;
+}
+.circle-title-div img{
+	margin-right: 9px;
+}
+.circle-title-left{
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+}
+.circle-title-official{
+	width: 35px;
+	height: 26px;
+	background: #FFAA23;
+	border: 1px solid #FFAA23;
+	color: #FFFFFF;
+	font-size: 12px;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+}
+.circle-title-members{
+	width: 33px;
+	height: 26px;
+	border: 1px solid #DCDCDC;
+	font-size: 12px;
+	font-family: Microsoft YaHei;
+	font-weight: 400;
+	color: #676666;
+	background: #FFFFFF;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	margin-left: 7px;
+}
+.circle-title-font{
+	width: 90px;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.circle-button-inactive{
+	width: 220px;
+	height: 30px;
+	margin-bottom: 10px;
+	background: #FFFFFF;
+	border: 2px solid #EEEEEE;
+	border-radius: 2px;
+	color: #676666;
+	font-size: 12px;
+	cursor: pointer;
+}
+.circle-button-active{
+	width: 220px;
+	height: 30px;
+	margin-bottom: 10px;
+	background: #EEEEEE;
+	border: 2px solid #EEEEEE;
+	border-radius: 2px;
+	color: #000000;
+	font-size: 12px;
+}
+.seniors-name{
+	font-size: 10px;
+	color: #1296DB;
+}
+.seniors-span{
+	font-size: 10px;
+}
+.circle-line-right{
+	width: 50%;
+	height: 100%;
+}
+.circle-img-mask{
+	width: 97%;
+	height: 100%;
+	background: #353535;
+	border: 1px solid #353535;
+	opacity: 0.7;
+	position: relative;
+	bottom: 103%;
+	font-size: 12px;
+	color: #FFFFFF;
+	line-height: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	padding-left: 8px;
+}
+.circle-img-mask span{
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+}
+.more-details-div{
+	margin-left: 5px;
+	cursor: pointer;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+.more-details-div img{
+	width: 13px;
+	height: 13px;
+	margin-left: 4px;
+	position: relative;
+	top: 3px;
+}
+.circle-page-div{
+	width: 584px;
+	height: 72px;
+	border-top: 2px solid #EEEEEE;
+	margin-top: 22px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.circle-page-div button{
+	width: 210px;
+	height: 30px;
+	background: #EEEEEE;
+	border: 1px solid #EEEEEE;
+	border-radius: 2px;
+	color: #8A8A8A;
+	font-size: 14px;
+	cursor: pointer;
+}
 
-    .right{
-    	width: 431px;
-    	margin-left: 13px;
-    }
-    .right-nav{
-    	background: #FFFFFF;
-    	width: 100%;
-    	height: 210px;
-    	display: flex;
-    	flex-direction: column;
-    	justify-content: flex-start;
-    }
-    .right-post{
-    	background: #FFFFFF;
-    	width: 100%;
-    	height: 160px;
-    	display: flex;
-    	flex-direction: column;
-    	justify-content: flex-start;
-    	margin-top: 16px;
-    }
-    .nav-line{
-    	width: 100%;
-    	height: 39px;
-    	margin-top: 11px;
-    	display: flex;
-    	justify-content: flex-start;
-    	align-items: center;
-    	font-family: MicrosoftYaHei;
-    	font-weight: 400;
-    	font-size: 16px;
-    	color: #676666;
-    }
-    /*父类nav-line*/
-    .nav-line:hover{
-    	background: #EEEEEE;
-    	cursor: pointer;
-    }
-    /*父类nav-line联动子类line-num*/
-    .nav-line:hover .line-num{
-    	background: #FFFFFF;
-    }
-    .collection-icon{
-    	margin-left: 26px;
-    	margin-right: 13px;
-    	width: 16px;
-    	height: 16px;
-    }
-    .line-title{
-    	width: 320px;
-    }
-    .line-num{
-    	width: 29px;
-    	height: 29px;
-    	background: #EEEEEE;
-    	display: flex;
-    	justify-content: center;
-    	align-items: center;
-    	border-radius: 8px;
-    	font-size: 14px;
-    	color: #676666;
-    	font-weight: 400;
-    }
+.right{
+	width: 431px;
+	margin-left: 13px;
+}
+.right-nav{
+	background: #FFFFFF;
+	width: 100%;
+	height: 210px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+.right-post{
+	background: #FFFFFF;
+	width: 100%;
+	height: 160px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	margin-top: 16px;
+}
+.nav-line{
+	width: 100%;
+	height: 39px;
+	margin-top: 11px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	font-family: MicrosoftYaHei;
+	font-weight: 400;
+	font-size: 16px;
+	color: #676666;
+}
+/*父类nav-line*/
+.nav-line:hover{
+	background: #EEEEEE;
+	cursor: pointer;
+}
+/*父类nav-line联动子类line-num*/
+.nav-line:hover .line-num{
+	background: #FFFFFF;
+}
+.collection-icon{
+	margin-left: 26px;
+	margin-right: 13px;
+	width: 16px;
+	height: 16px;
+}
+.line-title{
+	width: 320px;
+}
+.line-num{
+	width: 29px;
+	height: 29px;
+	background: #EEEEEE;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 8px;
+	font-size: 14px;
+	color: #676666;
+	font-weight: 400;
+}
+.right-carousel{
+	width: 100%;
+	height: 184px;
+	margin-top: 16px;
+	overflow: hidden;						/*超出当前区域隐藏*/
+	cursor: pointer;						/*鼠标悬停时光标形状*/
+}
+.carousel-img{
+	width: 430px;
+	height: 100%;
+}
+.carousel-btn-div{
+	width: 106px;
+	height: 20px;
+	background: #a9a9a9;
+	z-index: 10;
+	position: relative;
+	bottom: 11%;
+	left: 75%;
+	opacity: 0.8;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+.carousel-btn-div span{
+	height: 6px;
+	width: 6px;
+	border-radius: 50%;
+	background: #d2d2d2;
+	z-index: 20;
+}
+.carousel-btn-div .active{
+	background: #ffffff !important;
+}
+/*轮播图动画未完成
+.image-enter{
+	transform: translateX(100%);
+}
+.image-enter-active{
+	transform: translateX(0);
+	transition: all 1.5s ease;
+}
+.image-leave{
+	transform: translateX(0);
+}
+.image-leave-active{
+	transform: translateX(-100%);
+	transition: all 1.5s ease;
+}*/
 </style>

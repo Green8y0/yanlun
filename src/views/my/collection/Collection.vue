@@ -7,7 +7,7 @@
                 <!-- 用户信息 -->
                 <div class="top-userinfo">
                     <img :src="require('@/assets/img/common/'+userInfo.headPortrait+'.png')"
-                    class="top-headPortrait">
+                         class="top-headPortrait">
                     <!-- 用户名 -->
                     <div class="userinfo-name-div">
                         <span class="userinfo-name">{{userInfo.baseInfo.nickName}}</span>
@@ -46,7 +46,7 @@
                     </div>
                     <!-- end of 文章区域标题 -->
 
-                    
+
 
                     <!-- 文章内容(无帖子) -->
                     <div class="null-article-content" v-if="posts.length===0">
@@ -64,91 +64,91 @@
                     <!-- 文章内容(有帖子) -->
                     <div class="article-content" v-else>
                         <div class="post-line" v-for="(post,index) in posts" :key="index">
-	    					<!-- 帖子标题 -->
-		    				<div class="post-title">
-		    					<a class="post-a">{{post.title}}</a>
-		    				</div>
-		    				<!-- end of 帖子标题 -->
-	    				
-		    				<!-- 帖子内容 -->
-		    				<div class="post-content">
-		    					<div class="post-img" v-if="post.postImg!=null">
-		    						<!-- <img :src="post.postImg" class="post-img"> -->
-		    						<img :src="require('@/assets/img/common/'+post.postImg+'.png')"
-		    						class="post-img">
-		    					</div>
-		    					<div :class="post.postImg!=null?'post-text':'post-text-nullImg'">
+                            <!-- 帖子标题 -->
+                            <div class="post-title">
+                                <a class="post-a">{{post.title}}</a>
+                            </div>
+                            <!-- end of 帖子标题 -->
+
+                            <!-- 帖子内容 -->
+                            <div class="post-content" @click="goPassage">
+                                <div class="post-img" v-if="post.postImg!=null">
+                                    <!-- <img :src="post.postImg" class="post-img"> -->
+                                    <img :src="require('@/assets/img/common/'+post.postImg+'.png')"
+                                         class="post-img">
+                                </div>
+                                <div :class="post.postImg!=null?'post-text':'post-text-nullImg'">
 		    						<span>
 		    							{{post.author}}：{{post.content}}
 		    							<span class="post-more">了解详情</span>
 		    							<img src="@/assets/img/common/more_icon.png" class="more-icon">
 		    						</span>
-		    					</div>
-		    				</div>
-		    				<!-- end of 帖子内容 -->
+                                </div>
+                            </div>
+                            <!-- end of 帖子内容 -->
 
-		    				<!-- 底部功能栏 -->
-		    				<div class="post-bottom">
-		    					<!-- 左侧功能 -->
-		    					<div class="bottom-left">
-		    						<!-- 作者头像 -->
-		    						<img class="head-portrait"
-		    						:src="require('@/assets/img/common/'+post.headPortrait+'.png')">
-		    						<!-- 作者名 -->
-		    						<div class="author-name">
-			    						<span>{{post.author}}</span>
-		    						</div>
-		    						<!-- 赞 -->
-		    						<div class="praise-div">
+                            <!-- 底部功能栏 -->
+                            <div class="post-bottom">
+                                <!-- 左侧功能 -->
+                                <div class="bottom-left">
+                                    <!-- 作者头像 -->
+                                    <img class="head-portrait"
+                                         :src="require('@/assets/img/common/'+post.headPortrait+'.png')">
+                                    <!-- 作者名 -->
+                                    <div class="author-name">
+                                        <span>{{post.author}}</span>
+                                    </div>
+                                    <!-- 赞 -->
+                                    <div class="praise-div">
                                         <!-- 已点赞图标 -->
-		    							<img src="@/assets/img/common/praise_active.png"
-		    							v-if="post.options.isPraise">
+                                        <img src="@/assets/img/common/praise_active.png"
+                                             v-if="post.options.isPraise">
                                         <!-- 未点赞图标 -->
-		    							<img src="@/assets/img/common/praise.png" v-else>
-		    							<span v-if="post.praiseCount<10000">{{post.praiseCount}}</span>
-		    							<span v-else>{{post.praiseCount/10000}}万</span>
-		    						</div>
-		    						<!-- 踩 -->
-		    						<div class="trample-div">
-		    							<img src="@/assets/img/common/trample.png">
-		    						</div>
-		    					</div>
-		    					<!-- end of 左侧功能 -->
+                                        <img src="@/assets/img/common/praise.png" v-else>
+                                        <span v-if="post.praiseCount<10000">{{post.praiseCount}}</span>
+                                        <span v-else>{{post.praiseCount/10000}}万</span>
+                                    </div>
+                                    <!-- 踩 -->
+                                    <div class="trample-div">
+                                        <img src="@/assets/img/common/trample.png">
+                                    </div>
+                                </div>
+                                <!-- end of 左侧功能 -->
 
-		    					<!-- 右侧功能 -->
-		    					<div class="bottom-right">
-		    						<div class="post-function" style="margin-left: 25px;">
+                                <!-- 右侧功能 -->
+                                <div class="bottom-right">
+                                    <div class="post-function" style="margin-left: 25px;">
                                         <!-- 已收藏图标 -->
                                         <img src="@/assets/img/common/collected.png"
-                                        v-if="post.options.isCollect">
+                                             v-if="post.options.isCollect">
                                         <!-- 未收藏图标 -->
-		    							<img src="@/assets/img/common/collection.png" v-else>
+                                        <img src="@/assets/img/common/collection.png" v-else>
                                         <span v-if="post.options.isCollect">已收藏</span>
-		    							<span v-else>收藏</span>
-		    						</div>
-		    						<div class="post-function">
+                                        <span v-else>收藏</span>
+                                    </div>
+                                    <div class="post-function">
                                         <img src="@/assets/img/common/shared.png"
-                                        v-if="post.options.isShare">
-		    							<img src="@/assets/img/common/share.png" v-else>
+                                             v-if="post.options.isShare">
+                                        <img src="@/assets/img/common/share.png" v-else>
                                         <span v-if="post.options.isShare">已分享</span>
-		    							<span v-else>分享</span>
-		    						</div>
-		    						<div class="post-function" style="width: 90px;">
+                                        <span v-else>分享</span>
+                                    </div>
+                                    <div class="post-function" style="width: 90px;">
                                         <img src="@/assets/img/common/talked.png"
-                                        v-if="post.options.isTalk">
-		    							<img src="@/assets/img/common/talk.png" v-else>
+                                             v-if="post.options.isTalk">
+                                        <img src="@/assets/img/common/talk.png" v-else>
                                         <span v-if="post.options.isTalk">已评论</span>
-		    							<span v-else-if="post.talkCount<10000">{{post.talkCount}}条评论</span>
-		    							<span v-else>{{post.talkCount/10000}}万条评论</span>
-		    						</div>
-		    						<div class="post-function">
-		    							<span>{{post.createTime}}</span>
-		    						</div>
-		    					</div>
-		    					<!-- end of 右侧功能 -->
-		    				</div>
-		    				<!-- end of 底部功能栏 -->
-    					</div>
+                                        <span v-else-if="post.talkCount<10000">{{post.talkCount}}条评论</span>
+                                        <span v-else>{{post.talkCount/10000}}万条评论</span>
+                                    </div>
+                                    <div class="post-function">
+                                        <span>{{post.createTime}}</span>
+                                    </div>
+                                </div>
+                                <!-- end of 右侧功能 -->
+                            </div>
+                            <!-- end of 底部功能栏 -->
+                        </div>
                     </div>
                     <!-- end of 文章内容(有帖子) -->
                 </div>
@@ -166,7 +166,7 @@
                         </div>
                         <div class="edit-mid">
                             <div class="mid-font-div">
-                                <span class="mid-font">个人资料完成度 
+                                <span class="mid-font">个人资料完成度
                                     <span class="complete-degree">{{completeDegree}}</span>
                                 </span>
                             </div>
@@ -179,7 +179,7 @@
                             <!-- 个人信息显示区域 -->
                             <!-- 真实姓名显示 -->
                             <div v-if="userInfo.baseInfo.realName.length>0"
-                            class="show-personalInfo-line" style="border: none;">
+                                 class="show-personalInfo-line" style="border: none;">
                                 <img src="@/assets/img/common/realName_icon.png" class="show-personalInfo-img">
                                 <span class="show-personalInfo-font">{{userInfo.baseInfo.realName}}</span>
                             </div>
@@ -198,9 +198,9 @@
 
                             <!-- 本科院校显示 -->
                             <div class="show-personalInfo-line"
-                            v-if="userInfo.baseInfo.underGraduateSchool.length>0">
+                                 v-if="userInfo.baseInfo.underGraduateSchool.length>0">
                                 <img src="@/assets/img/common/underGraduateSchool_icon.png"
-                                class="show-personalInfo-img">
+                                     class="show-personalInfo-img">
                                 <span class="show-personalInfo-font">
                                     本科院校&nbsp;&nbsp;&nbsp;{{userInfo.baseInfo.underGraduateSchool}}
                                 </span>
@@ -208,9 +208,9 @@
 
                             <!-- 目标院校显示 -->
                             <div class="show-personalInfo-line"
-                            v-if="userInfo.baseInfo.targetSchool.length>0">
+                                 v-if="userInfo.baseInfo.targetSchool.length>0">
                                 <img src="@/assets/img/common/targetSchool_icon.png"
-                                class="show-personalInfo-img">
+                                     class="show-personalInfo-img">
                                 <span class="show-personalInfo-font">
                                     目标院校&nbsp;&nbsp;&nbsp;{{userInfo.baseInfo.targetSchool}}
                                 </span>
@@ -218,19 +218,19 @@
 
                             <!-- 考研目标显示 -->
                             <div class="show-personalInfo-line"
-                            v-if="userInfo.baseInfo.postGraduateGoal.length>0">
+                                 v-if="userInfo.baseInfo.postGraduateGoal.length>0">
                                 <img src="@/assets/img/common/postGraduateGoal_icon.png"
-                                class="show-personalInfo-img" style="margin-left: 0px;">
+                                     class="show-personalInfo-img" style="margin-left: 0px;">
                                 <span class="show-personalInfo-font">
                                     考研目标&nbsp;&nbsp;&nbsp;{{userInfo.baseInfo.postGraduateGoal}}
                                 </span>
                             </div>
-                            
+
                             <!-- 简介显示 -->
                             <div class="show-personalInfo-textarea"
-                            v-if="userInfo.baseInfo.introduction.length>0">
+                                 v-if="userInfo.baseInfo.introduction.length>0">
                                 <img src="@/assets/img/common/introduction_icon.png"
-                                class="show-personalInfo-img">
+                                     class="show-personalInfo-img">
                                 <span class="show-personalInfo-font">
                                     {{userInfo.baseInfo.introduction}}
                                 </span>
@@ -251,7 +251,7 @@
 </template>
 
 <script>
-	import {getUrlInfo} from '@/util.js'
+    import {getUrlInfo} from '@/util.js'
     import Copyright from '@/component/Copyright'
     import UserPageNav from '@/component/UserPageNav'
     import FocusList from '@/component/FocusList'
@@ -281,7 +281,7 @@
                         location: "",                       // 所在地
                         sex: "男",							// 性别
                         birthday: "",						// 生日
-                        targetSchool: "华中科技大学",			// 目标院校
+                        targetSchool: "华中科技大学",					// 目标院校
                         postGraduateGoal: "",			    // 考研目标(专硕/学硕)
                         registerTime: "2021-01-21",			// 注册时间
                         underGraduateSchool: "",			// 本科院校
@@ -296,11 +296,11 @@
                         headPortrait: "head_portrait1",
                         introduction: "一个努力上进、很好相处的学长！"
                     },
-                    {
-                        name: "怪兽小天",
-                        headPortrait: "head_portrait4",
-                        introduction: "一个喜欢交流的人，希望在这里找到志同..."
-                    }],
+                        {
+                            name: "怪兽小天",
+                            headPortrait: "head_portrait4",
+                            introduction: "一个喜欢交流的人，希望在这里找到志同..."
+                        }],
                     collectionNum: 1,						// 我的收藏
                     historyNum: 10,							// 浏览历史
                     attentionNum: 2,						// 我的关注
@@ -310,81 +310,81 @@
                     myFan: 0								// 我的粉丝
                 },
                 posts: [{
-        			title: "新手小白如何着手考研？",
-        			content: "考研的胖友们速速集合，这篇文章可以解决你备考全程绝大部分问题，从考研择校、考研核心信息、英语、政治、数学、专业课超强可落地复习经验，具体到英语单词怎么背、怎么整理笔记、专业课怎么复习、复试如何脱颖而出等......",
-        			author: "林月半",
+                    title: "新手小白如何着手考研？",
+                    content: "考研的胖友们速速集合，这篇文章可以解决你备考全程绝大部分问题，从考研择校、考研核心信息、英语、政治、数学、专业课超强可落地复习经验，具体到英语单词怎么背、怎么整理笔记、专业课怎么复习、复试如何脱颖而出等......",
+                    author: "林月半",
                     email: "123456789@qq.com",
-        			headPortrait: "head_portrait1",			// 头像
-        			praiseCount: 24000,						// 点赞量
-        			talkCount: 1125,						// 评论量
-        			postImg: "post_img1",					// 附图
-        			options: {								// 是否赞/踩/收藏/分享/评论
-        				isPraise: true,
-        				isTrample: false,
-        				isCollect: true,
-        				isShare: true,
-        				isTalk: true
-        			},
+                    headPortrait: "head_portrait1",			// 头像
+                    praiseCount: 24000,						// 点赞量
+                    talkCount: 1125,						// 评论量
+                    postImg: "post_img1",					// 附图
+                    options: {								// 是否赞/踩/收藏/分享/评论
+                        isPraise: true,
+                        isTrample: false,
+                        isCollect: true,
+                        isShare: true,
+                        isTalk: true
+                    },
                     reprintedPlace: null,                   // 转载地址
-        			createTime: "2021/01/14"
-        		},
-        		{
-        			title: "考研真的比高考简单吗？",
-        			content: "高考我们只负责学就行了，参考书目、考试重点、备考方案、甚至什么时候学什么科目，做什么试题，老师都给我们规划好了。（无脑学就行了）而面对考研，我们却始终手足无措......",
-        			author: "Nancy",
-                    email: "123456789@qq.com",
-        			headPortrait: "head_portrait2",
-        			praiseCount: 10000,
-        			talkCount: 937,
-        			postImg: null,
-        			options: {
-        				isPraise: false,
-        				isTrample: false,
-        				isCollect: true,
-        				isShare: false,
-        				isTalk: false
-        			},
-                    reprintedPlace: null,
-        			createTime: "2020/01/01"
-        		},
-        		{
-        			title: "现在普通二本考研有多难？",
-        			content: "真的很难，考研给我的感觉就是过五关斩六将。 本科是一所非常普通的二本，现在已经上岸某211院校。 难在择校。二本考研第一步就是难在择校上，我很想往高处考......",
-        			author: "无忧小新",
-                    email: "123456789@qq.com",
-        			headPortrait: "head_portrait3",
-        			praiseCount: 1025,
-        			talkCount: 286,
-        			postImg: null,
-        			options: {
-        				isPraise: false,
-        				isTrample: false,
-        				isCollect: true,
-        				isShare: false,
-        				isTalk: false
-        			},
-                    reprintedPlace: null,
-        			createTime: "2020/01/14"
-        		},
-        		{
-        			title: "考研有必要买平板吗？",
-        			content: "还有3个多星期就要考试了，现在买是有点晚了，还没有过新鲜劲儿就该考试了。对于下一年备考乃至刚上大学的同学，生活在后信息时代，不夸张的说iPad已经和手机、电脑并列为大学生三件套了，可以考虑。电脑和平板二者体验差别很大，答主说自己......",
-        			author: "怪兽小天",
-                    email: "123456789@qq.com",
-        			headPortrait: "head_portrait4",
-        			praiseCount: 1025,
-        			talkCount: 286,
-        			postImg: "post_img4",
-        			options: {
-        				isPraise: false,
-        				isTrample: false,
-        				isCollect: true,
-        				isShare: false,
-        				isTalk: false
-        			},
-                    reprintedPlace: null,
-        			createTime: "2020/01/14"
-        		}]
+                    createTime: "2021/01/14"
+                },
+                    {
+                        title: "考研真的比高考简单吗？",
+                        content: "高考我们只负责学就行了，参考书目、考试重点、备考方案、甚至什么时候学什么科目，做什么试题，老师都给我们规划好了。（无脑学就行了）而面对考研，我们却始终手足无措......",
+                        author: "Nancy",
+                        email: "123456789@qq.com",
+                        headPortrait: "head_portrait2",
+                        praiseCount: 10000,
+                        talkCount: 937,
+                        postImg: null,
+                        options: {
+                            isPraise: false,
+                            isTrample: false,
+                            isCollect: true,
+                            isShare: false,
+                            isTalk: false
+                        },
+                        reprintedPlace: null,
+                        createTime: "2020/01/01"
+                    },
+                    {
+                        title: "现在普通二本考研有多难？",
+                        content: "真的很难，考研给我的感觉就是过五关斩六将。 本科是一所非常普通的二本，现在已经上岸某211院校。 难在择校。二本考研第一步就是难在择校上，我很想往高处考......",
+                        author: "无忧小新",
+                        email: "123456789@qq.com",
+                        headPortrait: "head_portrait3",
+                        praiseCount: 1025,
+                        talkCount: 286,
+                        postImg: null,
+                        options: {
+                            isPraise: false,
+                            isTrample: false,
+                            isCollect: true,
+                            isShare: false,
+                            isTalk: false
+                        },
+                        reprintedPlace: null,
+                        createTime: "2020/01/14"
+                    },
+                    {
+                        title: "考研有必要买平板吗？",
+                        content: "还有3个多星期就要考试了，现在买是有点晚了，还没有过新鲜劲儿就该考试了。对于下一年备考乃至刚上大学的同学，生活在后信息时代，不夸张的说iPad已经和手机、电脑并列为大学生三件套了，可以考虑。电脑和平板二者体验差别很大，答主说自己......",
+                        author: "怪兽小天",
+                        email: "123456789@qq.com",
+                        headPortrait: "head_portrait4",
+                        praiseCount: 1025,
+                        talkCount: 286,
+                        postImg: "post_img4",
+                        options: {
+                            isPraise: false,
+                            isTrample: false,
+                            isCollect: true,
+                            isShare: false,
+                            isTalk: false
+                        },
+                        reprintedPlace: null,
+                        createTime: "2020/01/14"
+                    }]
             }
         },
         methods:{
@@ -416,6 +416,9 @@
                 let urlInfo = getUrlInfo()
                 this.currentRouter = urlInfo.currentRouter
                 console.log('currentRouter=',this.currentRouter)
+            },
+            goPassage(){
+                this.$router.push("/passage");
             }
         },
         mounted(){
@@ -783,8 +786,8 @@
         margin: 16px 0px 13px;
     }
     .post-a{
-    	font-size: 16px;
-    	color: #000000;
+        font-size: 16px;
+        color: #000000;
     }
     .post-content{
         display: flex;

@@ -17,9 +17,8 @@
                 </li>
                 <li class="nav-li">
                     <router-link to="tribune" @click="checkCurrentRouter"
-                                :class="currentRouter === 'tribune' ||
-                                currentRouter === 'circle' ||
-                                currentRouter === 'circledetail'?'nav-link-active':'nav-link'">
+                                 :class="currentRouter === 'tribune' ||
+                                 currentRouter === 'circle'?'nav-link-active':'nav-link'">
                         <span>论坛</span>
                     </router-link>
                 </li>
@@ -34,7 +33,7 @@
             <!-- 搜索框区域 -->
             <ul class="navbar-nav-mid">
                 <div class="search">
-                    <input type="text" name="searchContent" placeholder="搜索">
+                    <input type="text" name="searchContent" placeholder="搜索" @change="searchContent">
                     <img src="../assets/img/common/search_icon.png" class="search-icon">
                 </div>
             </ul>
@@ -42,7 +41,7 @@
 
             <!-- 右侧登录区域 -->
             <ul class="navbar-nav-right">
-                <li v-if="!show" class="nav-li">
+                <li v-if="this.$store.state.isLogin" class="nav-li">
                     <router-link to="my" @click="checkCurrentRouter"
                                  :class="currentRouter === 'my'?'nav-link-active':'nav-link'">
                         <span>我的</span>
@@ -74,6 +73,9 @@
                 let urlInfo = getUrlInfo()
                 this.currentRouter = urlInfo.currentRouter
                 console.log('currentRouter=',this.currentRouter)
+            },
+            searchContent(){
+
             }
         },
         mounted(){

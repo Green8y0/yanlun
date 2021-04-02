@@ -10,6 +10,7 @@
     "axios": "^0.21.0",
     "better-scroll": "^2.0.5",
     "core-js": "^3.6.5",
+    "echarts": "^5.0.2",
     "less": "^3.12.2",
     "less-loader": "^7.0.2",
     "v-distpicker": "^1.2.9",
@@ -23,6 +24,7 @@
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0"
+    "@vue/compiler-sfc": "^3.0.0",
+    "vuex-persist": "^3.1.3"
   }
 }

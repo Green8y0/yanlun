@@ -84,7 +84,7 @@
     					</div>
 
     					<div class="author-page">
-    						<span @click="goYour()">去Ta的主页逛逛</span>
+    						<span>去Ta的主页逛逛</span>
     						<img src="@/assets/img/common/edit_userinfo.png">
     					</div>
     				</div>
@@ -213,11 +213,6 @@
         			id: 10,
         			title: "考研如何稳健的拿到400+？"
         		}]
-        	}
-        },
-        methods: {
-        	goYour() {
-        		this.$router.push('/your')
         	}
         }
     }

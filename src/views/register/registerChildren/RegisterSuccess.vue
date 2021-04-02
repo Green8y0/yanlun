@@ -14,14 +14,19 @@
 
         <!-- 登录按钮区域 -->
         <div class="bottom-div">
-            <button class="btn">登&nbsp;&nbsp;&nbsp;录</button>
+            <button class="btn" @click="goLogin">登&nbsp;&nbsp;&nbsp;录</button>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "RegisterSuccess"
+        name: "RegisterSuccess",
+        methods:{
+            goLogin(){
+                this.$router.push('/login');
+            }
+        }
     }
 </script>
 
